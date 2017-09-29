@@ -16,6 +16,7 @@
     <link rel="stylesheet" type="text/css" href="/public/layui/css/layui.css" />
     <script src="/public/js/plug-ins/pagination.js"></script>
     <script src="/public/js/public.js"></script>
+    <script src="/public/js/public.js"></script>
 </head>
 <body>
 
