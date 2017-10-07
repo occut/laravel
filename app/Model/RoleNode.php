@@ -6,6 +6,6 @@ use Illuminate\Database\Eloquent\Model;
 
 class RoleNode extends Model
 {
-    protected $table = 'role_node';
+    protected $table = 'role_nodes';
     protected $primaryKey = 'role_node_id';
 }

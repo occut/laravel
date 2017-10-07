@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Model\Admin_role;
 use App\Model\AdminNodes;
+use App\Model\RoleNode;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\DB;
@@ -77,7 +78,15 @@ class AdminRoleController extends Controller
      * 权值
      */
     public function Weight(Request $request,$id){
-//        dump($id);
+        $myNode  = RoleNode::where('role_id',$id)->pluck('node_id')->toArray();
+        $nodeIds =  implode(',',$myNode);
+        $result = AdminNodes::select('node_id','pid','nodename as name', 'auth')->orderBy('sortid', 'asc')->get()->map(function ($v,$k) use(&$myNode) {
+            $v->open = true;
+            $v->checked = in_array($v->node_id,$myNode);
+//                $v->chkDisabled = RbacNode::isExceptAuth($v->auth);
+            return $v;
+        })->toJSON();
+        dump($result);
     }
     /**
      * Update the specified resource in storage.
