@@ -13,7 +13,7 @@ class CreateRoleNodesTable extends Migration
      */
     public function up()
     {
-        Schema::create('role_nodes', function (Blueprint $table) {
+        Schema::create('role_node', function (Blueprint $table) {
             $table->increments('role_node_id');
             $table->integer('role_id')->unsigned();
             $table->integer('node_id')->unsigned();
@@ -30,6 +30,6 @@ class CreateRoleNodesTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('role_nodes');
+        Schema::dropIfExists('role_node');
     }
 }
