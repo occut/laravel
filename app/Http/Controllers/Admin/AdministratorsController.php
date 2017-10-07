@@ -67,7 +67,7 @@ class AdministratorsController extends Controller
         $data = $this->data($data);
         //添加用户
         $value = AdminUser::AddAdminUser($data);
-        //返回数据
+        //返回数据12312312
         if($value['error']){
             $request->session()->flash('msg',$value['msg']);
             return redirect()->route('Administrators.index');
