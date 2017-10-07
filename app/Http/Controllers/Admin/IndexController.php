@@ -17,8 +17,6 @@ class IndexController extends Controller
      */
     public function index()
     {
-
-
         return view('Admin/layouts.layout_admin');
     }
 //    public function indexs()
@@ -36,9 +34,9 @@ class IndexController extends Controller
     {
         Cache::forever('key','value'); //存储
         $a = Cache::get('key'); //获取
-    // Cache::forget('key'); //删除
-     dd($a);
-    // die;
+        // Cache::forget('key'); //删除
+         dd($a);
+        // die;
     }
 
     /**

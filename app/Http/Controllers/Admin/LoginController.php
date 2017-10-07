@@ -61,11 +61,10 @@ class LoginController extends Controller
         $password = $request->input('password');
         $captcha = $request->input('captcha');
         $user = new AdminUser();
-        $value = captcha_check($captcha);
-//        dump($value);
-        if(!$value){
-            return ['msg'=>'验证码错误'];
-        }
+//        $value = captcha_check($captcha);
+//        if(!$value){
+//            return ['msg'=>'验证码错误'];
+//        }
         $content = $user->where('username',$username)->first();
         if (is_null($content)) {
             return ['msg'=>'账号或密码错误'];

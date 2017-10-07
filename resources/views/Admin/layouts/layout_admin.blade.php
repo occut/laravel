@@ -82,6 +82,9 @@
                     </ul>
                 </div>
             </header>
+            <div id="dialog">
+                <h4></h4>
+            </div>
         @section('main')
         @show  {{--main--}}
         @section('footer')
@@ -105,15 +108,15 @@
 </div>
 <script src="/public/js/jquery.js"></script>
 <script src="/public/js/plug-ins/customScrollbar.min.js"></script>
-{{--<script src="/public/js/plug-ins/echarts.min.js"></script>--}}
 <script src="/public/js/plug-ins/layerUi/layer.js"></script>
 <script src="/public/layui/layui.js"></script>
 <script src="/public/layui/layui.all.js"></script>
-{{--<script src="editor/ueditor.config.js"></script>--}}
-{{--<script src="editor/ueditor.all.js"></script>--}}
 <script src="/public/js/plug-ins/pagination.js"></script>
 <script src="/public/js/public.js"></script>
+<script src="/public/admin/admin.js"></script>
 @section('js')
+
 @show  {{--footer--}}
+
 </body>
 </html>

@@ -36,6 +36,7 @@ Route::group(['middleware' => ['CheckAge'],'namespace' => 'Admin'], function () 
         =>array('create' => 'index.create'
             ,'index'=>'index.index'
             ,'store'=>'index.store'
+            ,'show'=>'index.show'
             ,'edit'=>'index.edit'
             ,'update'=>'index.update'
             ,'destroy'=>'index.delete',
@@ -47,13 +48,11 @@ Route::group(['middleware' => ['CheckAge'],'namespace' => 'Admin'], function () 
                     ,'AdministratorsController'
                     ,array('names'
         =>array('create' => 'Administrators.create'
-
-            ,'index'=>'Administrators.index'
-            ,'store'=>'Administrators.store'
-            ,'edit'=>'Administrators.edit'
-            ,'update'=>'Administrators.update'
-            ,'destroy'=>'Administrators.delete'
-
+            ,'index'=>'Administrators.index'//用户首页
+            ,'store'=>'Administrators.store'//添加用户
+            ,'edit'=>'Administrators.edit'//编辑用户
+            ,'update'=>'Administrators.update'//更新权限
+            ,'destroy'=>'Administrators.delete'//删除用户
             )
         ));
     Route::any('Admin/Administrators/weight/{id?}','AdministratorsController@weight')->name("Administrators/weight");

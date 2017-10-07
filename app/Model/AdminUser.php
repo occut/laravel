@@ -30,10 +30,26 @@ class AdminUser extends Model
         $value = $user->save();
         if($value){
             LogAction::logAction("新增用户[".$data['username']."]成功");
-            return ['msg'=>"新增用户[".$data['username']."]",'error'=>true];
+            return ['msg'=>"新增用户[".$data['username']."]成功",'error'=>true];
         }else{
             LogAction::logAction("新增用户[".$data['username']."]失败");
-            return ['msg'=>"新增用户[".$data['username']."]",'error'=>false];
+            return ['msg'=>"新增用户[".$data['username']."]失败",'error'=>false];
         }
     }
+    static public function Adminselect($id){
+        //实例化模型
+        $user = new AdminUser();
+        //查询数据
+        $content = $user->where('user_id',$id)->first();
+        return $content;
+    }
+
+    static public function Rolesselect(){
+        //实例化模型
+        $role = new Admin_role();
+        $content = $role->get();
+        return $content;
+    }
+
+
 }

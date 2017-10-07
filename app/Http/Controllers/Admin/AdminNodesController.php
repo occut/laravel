@@ -20,7 +20,6 @@ class AdminNodesController extends Controller
         $Node = AdminNodes::orderBy('sortid','asc');
         $result = $Node->get()->toArray();
         $result = Category::child($result,0,'node_id','pid');
-//        dump($result);die;
         return view('Admin/Administrators/AdminNodesindex',['result'=>$result]);
     }
 

@@ -17,8 +17,6 @@ class Controller extends BaseController
 
     function __construct()
     {
-        //父类初始化
-//        parent::__construct();
         //其他配置加载
         $this->getResourcePath();
     }

@@ -15,7 +15,7 @@ class IndexController extends Controller
     public function index()
     {
         //
-        return "intex.php";
+        return "首页";
     }
 
     /**

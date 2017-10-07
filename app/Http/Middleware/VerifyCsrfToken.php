@@ -13,21 +13,6 @@ class VerifyCsrfToken extends BaseVerifier
      */
     protected $except = [
         //
-        'getConfigs',
-        'editConfigs',
-        'contentState',
-        'resourcesUplode',
-        'destroy',
-        'ban',
-        'rolsdestroy',
-        'nodestore',
-        'smallstata',
-        'smallDel',
-        'tasksDel',
-        'showdel',
-        'configdestroy',
-        'idcarddestroy',
-        'accountdestroy',
-        'txtcreate',
+        'Administrators.delete'
     ];
 }

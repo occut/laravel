@@ -2,9 +2,27 @@
 
 namespace App\Model;
 
+use App\Functions\LogAction;
 use Illuminate\Database\Eloquent\Model;
 
 class UserRole extends Model
 {
     //
+    static public function AddAdminUser($id,$data){
+        //实例化模型
+        $UserRole = new UserRole();
+        $UserRole->where('user_id',$id)->delete();
+        //添加数据
+        $UserRole->user_id = $id;
+        $UserRole->role_id = $data['role'];
+        $value = $UserRole->save();
+        //返回参数
+        if($value){
+            LogAction::logAction("编辑权值[".$id."]成功");
+            return ['msg'=>"编辑权值[".$id."]成功",'error'=>true];
+        }else{
+            LogAction::logAction("编辑权值[".$id."]失败");
+            return ['msg'=>"编辑权值[".$id."]失败",'error'=>false];
+        }
+    }
 }

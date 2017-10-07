@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Functions\LogAction;
 use App\Model\Admin_role;
 use App\Model\AdminUser;
+use App\Model\UserRole;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 
@@ -30,6 +31,7 @@ class AdministratorsController extends Controller
         $content = $User->paginate(30);
         $Admin_role = Admin_role::Roleselect();
         //显示表单
+
         return view('Admin/Administrators/index',['content'=>$content,'Admin_role'=>$Admin_role]);
     }
     /**
@@ -66,7 +68,13 @@ class AdministratorsController extends Controller
         //添加用户
         $value = AdminUser::AddAdminUser($data);
         //返回数据
-        return $value;
+        if($value['error']){
+            $request->session()->flash('msg',$value['msg']);
+            return redirect()->route('Administrators.index');
+        }else{
+            $request->session()->flash('msg',$value['msg']);
+            return redirect()->route('Administrators.index');
+        }
     }
 
     /**
@@ -88,7 +96,12 @@ class AdministratorsController extends Controller
      */
     public function edit($id)
     {
-        //
+        //查询用户数据
+        $Admin_user = AdminUser::Adminselect($id);
+        //春训角色数据
+        $Roles = AdminUser::Rolesselect();
+        //赋值到模板
+        return view('Admin/Administrators/Adminedit')->with('content', $Admin_user)->with('roles',$Roles);
     }
 
     /**
@@ -98,9 +111,20 @@ class AdministratorsController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(Request $request,$id)
     {
-        //
+        //处理数据
+        $data = $this->data();
+        //添加数据
+        $AdminUser = UserRole::AddAdminUser($id,$data);
+        //返回数据
+        if($AdminUser['error']){
+            $request->session()->flash('msg',$AdminUser['msg']);
+            return redirect()->route('Administrators.index');
+        }else{
+            $request->session()->flash('msg',$AdminUser['msg']);
+            return redirect()->route('Administrators.index');
+        }
     }
 
     /**
@@ -111,6 +135,13 @@ class AdministratorsController extends Controller
      */
     public function destroy($id)
     {
-        //
+        //删除数据
+        //执行软删除
+        $value = AdminUser::where('user_id',$id)->delete();
+        if($value){
+            return ['msg'=>'删除用户成功','error'=>true];
+        }else{
+            return ['msg'=>'删除用户成功','error'=>false];
+        }
     }
 }
