@@ -61,7 +61,7 @@ class AdministratorsController extends Controller
      */
     public function store(Request $request)
     {
-        //获取数据
+        //获取数据121221
         $data = $request->all();
         //数据处理
         $data = $this->data($data);
