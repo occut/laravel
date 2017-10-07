@@ -70,8 +70,15 @@ class AdminRoleController extends Controller
     public function edit($id)
     {
         //
+        $value = Admin_role::selectid($id);
+        dump($value);
     }
-
+    /*
+     * 权值
+     */
+    public function Weight(Request $request,$id){
+//        dump($id);
+    }
     /**
      * Update the specified resource in storage.
      *

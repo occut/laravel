@@ -68,6 +68,8 @@ Route::group(['middleware' => ['CheckAge'],'namespace' => 'Admin'], function () 
             ,'destroy'=>'AdminRole.delete',
             )
         ));
+    //Weight
+    Route::any('Admin/AdminRole/Weight/{id?}','AdminRoleController@Weight')->name("AdminRole/weight");
     //模板管理
     Route::resource('Admin/AdminNodes'
         ,'AdminNodesController'

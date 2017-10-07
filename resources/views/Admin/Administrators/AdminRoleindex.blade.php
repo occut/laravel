@@ -36,8 +36,8 @@
                         <td ><a href="#">{{$v->rolename}}</a></td>
                         <td>{{$v->created_at}}</td>
                         <td>
-                            <a title="编辑" class="mr-5">编辑</a>
-                            <a title="权值" class="mr-5">权值</a>
+                            <a title="编辑" class="mr-5" href="{{route("AdminRole.edit",['id'=>$v->role_id])}}">编辑</a>
+                            <a title="权值" class="mr-5" href="{{route("AdminRole/weight",['id'=>$v->role_id])}}">权值</a>
                             <a title="删除">删除</a>
                         </td>
                     </tr>

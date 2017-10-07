@@ -34,4 +34,11 @@ class Admin_role extends Model
         $roles = DB::table('admin_roles')->get();
         return $roles;
     }
+    static public function selectid($id){
+        //实例化模型
+        $user = new Admin_role();
+        //查询数据
+        $content = $user->where('role_id', $id)->first();
+        return $content;
+    }
 }
