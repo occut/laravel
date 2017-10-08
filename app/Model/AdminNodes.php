@@ -14,4 +14,16 @@ class AdminNodes extends Model
         $roles = DB::table('admin_roles')->get();
         return $roles;
     }
+    public static function isExceptAuth($auth){
+        $auth       = explode('@', $auth);
+        $controller = isset($auth[0]) ? $auth[0] : '';
+        $action     = isset($auth[1]) ? $auth[1] : '';
+
+        $exceptAuth = config('rbac.except_auth');
+//        return $exceptAuth;
+        if(isset($exceptAuth[$controller]) && (empty($exceptAuth[$controller]) || in_array($action, $exceptAuth[$controller]))) {
+            return true;
+        }
+        return false;
+    }
 }

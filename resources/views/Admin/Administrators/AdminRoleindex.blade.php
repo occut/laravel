@@ -18,6 +18,11 @@
         <div style="margin:5px 0px">
             <button class="btn btn-secondary-outline"><a href="{{route("AdminRole.create")}}">添加</a></button>
         </div>
+        @if (Session::has('msg'))
+            <div class="alert alert-success">
+                {{Session::get('msg')}}
+            </div>
+    @endif
         <!--开始::内容-->
         <table class="table table-bordered table-striped table-hover" id="nodetree">
             <thead>

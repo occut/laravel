@@ -47,7 +47,7 @@
                 <div class="alert alert-success">
                     {{Session::get('msg')}}
                 </div>
-        @endif
+            @endif
 
         <!--开始::内容-->
             <table class="table table-bordered table-striped table-hover">

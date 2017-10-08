@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Functions\LogAction;
 use App\Model\Admin_role;
 use App\Model\AdminNodes;
 use App\Model\RoleNode;
@@ -78,15 +79,30 @@ class AdminRoleController extends Controller
      * 权值
      */
     public function Weight(Request $request,$id){
+        if ($request->isMethod('post')) {
+            $nodeIds = $this->filterId($request->get('node_id',0));
+            if(!count($nodeIds)) {
+                return $this->error('请勾选节点');
+            }
+            RoleNode::where('role_id',$id)->forceDelete();
+            array_map(function($node_id) use($id) {
+                RoleNode::insert(['node_id'=>$node_id,'role_id'=>$id]);
+            },$nodeIds);
+            LogAction::logAction($id);
+            $request->session()->flash('msg',"权值修改成功");
+            return redirect()->route('AdminRole.index');
+        }else{
         $myNode  = RoleNode::where('role_id',$id)->pluck('node_id')->toArray();
         $nodeIds =  implode(',',$myNode);
         $result = AdminNodes::select('node_id','pid','nodename as name', 'auth')->orderBy('sortid', 'asc')->get()->map(function ($v,$k) use(&$myNode) {
             $v->open = true;
             $v->checked = in_array($v->node_id,$myNode);
-//                $v->chkDisabled = RbacNode::isExceptAuth($v->auth);
+                $v->chkDisabled = AdminNodes::isExceptAuth($v->auth);
             return $v;
         })->toJSON();
-        dump($result);
+        return view('Admin/Administrators/AdminRoleWeight')->with('role_id',$id)->with('nodeIds',$nodeIds)->with('result',$result);
+    }
+
     }
     /**
      * Update the specified resource in storage.
