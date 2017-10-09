@@ -1,0 +1,110 @@
+<?php
+
+namespace App\Http\Controllers\Admin;
+
+use App\Functions\Category;
+use App\Functions\LogAction;
+use App\Model\AdminNodes;
+use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Cache;
+
+
+class IndexController extends Controller
+{
+    /**
+     * Display a listing of the resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function index()
+    {
+        $parent=DB::table('admin_nodes')->where(['nav'=>1,'pid'=>0])->orderby('sortid','asc')->get()->toArray();//查询要显示的父节点
+        $Node = AdminNodes::orderBy('sortid','asc');
+        $result = $Node->where(['nav'=>1])->get()->toArray();
+        $parent = Category::child($result,0,'node_id','pid');
+//        foreach ($parent as $key){
+//            $child=DB::table('admin_nodes')->where(['pid'=>$key->node_id,'nav'=>2])->get();
+//            for ($i=0;$i<count($child);$i++){
+//                $child1[]=$child[$i];
+//            }
+//        }
+        return view('Admin/layouts.layout_admin')->with('parent',$parent);
+    }
+//    public function indexs()
+//    {
+//        //
+//        return view('Admin/Index/index');
+//    }
+
+    /**
+     * Show the form for creating a new resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function create()
+    {
+        Cache::forever('key','value'); //存储
+        $a = Cache::get('key'); //获取
+        // Cache::forget('key'); //删除
+         dd($a);
+        // die;
+    }
+
+    /**
+     * Store a newly created resource in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function store(Request $request)
+    {
+        $ban = $request->get('ban',0);
+    }
+
+    /**
+     * Display the specified resource.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function show($id)
+    {
+        //
+    }
+
+    /**
+     * Show the form for editing the specified resource.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function edit($id)
+    {
+        //
+    }
+
+    /**
+     * Update the specified resource in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function update(Request $request, $id)
+    {
+        //
+    }
+
+    /**
+     * Remove the specified resource from storage.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function destroy($id)
+    {
+        //
+    }
+}

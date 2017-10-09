@@ -1,0 +1,59 @@
+<?php $__env->startSection('css'); ?>
+    <link rel="stylesheet" type="text/css" href="/public/common/treeTable/jquery.treetable.theme.default.css">
+    <link rel="stylesheet" type="text/css" href="/public/common/treeTable/jquery.treetable.css">
+<?php $__env->stopSection(); ?>  
+<?php $__env->startSection('nav'); ?>
+<?php $__env->stopSection(); ?>  
+<?php $__env->startSection('header'); ?>
+<?php $__env->stopSection(); ?>  
+<?php $__env->startSection('main'); ?>
+    <main class="main-cont content mCustomScrollbar">
+        <div class="breadcrumb">
+            <ul>
+                <li><a href="<?php echo e(route("index.index")); ?>">首页</a><i class="icon-angle-right"></i></li>
+                <li><a href="#">角色管理</a><i class="icon-angle-right"></i></li>
+            </ul>
+        </div>
+        <div style="margin:5px 0px">
+            <button class="btn btn-secondary-outline"><a href="<?php echo e(route("AdminRole.create")); ?>">添加</a></button>
+        </div>
+        <?php if(Session::has('msg')): ?>
+            <div class="alert alert-success">
+                <?php echo e(Session::get('msg')); ?>
+
+            </div>
+    <?php endif; ?>
+        <!--开始::内容-->
+        <table class="table table-bordered table-striped table-hover" id="nodetree">
+            <thead>
+            <tr>
+                <th>ID</th>
+                <th>角色</th>
+                <th>时间</th>
+                <th>操作</th>
+            </tr>
+            </thead>
+            <tbody>
+            <?php if(isset($content)): ?>
+                <?php $__currentLoopData = $content; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $k=>$v): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                    <tr class="cen">
+                        <td><?php echo e($v->role_id); ?></td>
+                        <td ><a href="#"><?php echo e($v->rolename); ?></a></td>
+                        <td><?php echo e($v->created_at); ?></td>
+                        <td>
+                            <a title="添加" class="mr-5" href="<?php echo e(route("AdminRole.create",['id'=>$v->role_id])); ?>">编辑</a>
+                            <a title="权值" class="mr-5" href="<?php echo e(route("AdminRole/weight",['id'=>$v->role_id])); ?>">权值</a>
+                            <a title="删除">删除</a>
+                        </td>
+                    </tr>
+                <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+            <?php endif; ?>
+            </tbody>
+        </table>
+    </main>
+<?php $__env->stopSection(); ?>  
+<?php $__env->startSection('footer'); ?>
+<?php $__env->stopSection(); ?>  
+<?php $__env->startSection('js'); ?>
+<?php $__env->stopSection(); ?>  
+<?php echo $__env->make('Admin.layouts.layout_admin', array_except(get_defined_vars(), array('__data', '__path')))->render(); ?>

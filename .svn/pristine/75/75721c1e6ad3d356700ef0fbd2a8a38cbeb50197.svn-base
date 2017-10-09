@@ -1,0 +1,93 @@
+<?php $__env->startSection('css'); ?>
+<link rel="stylesheet" type="text/css" href="/public/common/treeTable/jquery.treetable.theme.default.css">
+<link rel="stylesheet" type="text/css" href="/public/common/treeTable/jquery.treetable.css">
+<link rel="stylesheet" type="text/css" href="/public/common/zTree/css/zTreeStyle/zTreeStyle.css">
+<?php $__env->stopSection(); ?>  
+<?php $__env->startSection('nav'); ?>
+<?php $__env->stopSection(); ?>  
+<?php $__env->startSection('header'); ?>
+<?php $__env->stopSection(); ?>  
+<?php $__env->startSection('main'); ?>
+<main class="main-cont content mCustomScrollbar">
+    <div class="breadcrumb">
+        <ul>
+            <li><a href="<?php echo e(route("index.index")); ?>">首页</a><i class="icon-angle-right"></i></li>
+            <li><a href="#">角色管理</a><i class="icon-angle-right"></i></li>
+        </ul>
+    </div>
+    <div style="margin:5px 0px">
+        <button class="btn btn-secondary-outline"><a href="<?php echo e(route("AdminRole.create")); ?>">添加</a></button>
+    </div>
+    <!--开始::内容-->
+    <fieldset class="layui-elem-field layui-field-title">
+        <legend>角色节点</legend>
+        <div class="layui-field-box">
+            <form class="layui-form" action="<?php echo e(route('AdminRole/weight',['role_id'=>$role_id])); ?>" method="post">
+                <div class="layui-form-item">
+                    <label class="layui-form-label"></label>
+                    <div class="layui-input-inline">
+                        <ul id="nodetree" class="ztree"></ul>
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <div class="layui-input-block">
+                        <?php echo e(csrf_field()); ?>
+
+                        <input type="hidden" value="<?php echo e($nodeIds); ?>" name="node_id" id="node_id">
+                        <button class="layui-btn layui-btn-small" lay-submit>提交</button>
+                    </div>
+                </div>
+
+            </form>
+        </div>
+    </fieldset>
+</main>
+<?php $__env->stopSection(); ?>  
+<?php $__env->startSection('footer'); ?>
+<?php $__env->stopSection(); ?>  
+<?php $__env->startSection('js'); ?>
+    <script type="text/javascript" src="/public/common/zTree/js/jquery.ztree.core.min.js"></script>
+    <script type="text/javascript" src="/public/common/zTree/js/jquery.ztree.excheck.min.js"></script>
+    <script type="text/javascript">
+        var setting = {
+            check: {
+                enable: true,
+                chkboxType: { "Y" : "ps", "N" : "s" }
+            },
+            data: {
+                simpleData: {
+                    enable: true,
+                    idKey: "node_id",
+                    pIdKey: "pid",
+                }
+            },
+            callback: {
+                onCheck:onCheck
+            }
+        };
+
+        var node = <?php echo $result; ?>;
+        /**
+         * 获取选中的节点，更新数据到隐藏域
+         */
+        function onCheck(e,treeId,treeNode) {
+            var treeObj = $.fn.zTree.getZTreeObj("nodetree");
+            var nodes = treeObj.getCheckedNodes(true);
+            var nodeIds = "";
+            for(var i=0;i<nodes.length;i++){
+                if(nodeIds == '') {
+                    nodeIds += nodes[i].node_id;
+                }else{
+                    nodeIds += "," + nodes[i].node_id;
+                }
+
+            }
+            $("#node_id").attr('value',nodeIds);
+        }
+
+        $(document).ready(function(){
+            $.fn.zTree.init($("#nodetree"), setting, node);
+        });
+    </script>
+<?php $__env->stopSection(); ?>  
+<?php echo $__env->make('Admin.layouts.layout_admin', array_except(get_defined_vars(), array('__data', '__path')))->render(); ?>

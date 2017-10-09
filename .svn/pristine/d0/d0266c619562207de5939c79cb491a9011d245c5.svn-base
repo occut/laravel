@@ -1,0 +1,159 @@
+<?php $__env->startSection('css'); ?>
+    <link rel="stylesheet" type="text/css" href="/public/admin/treeTable/jquery.treetable.theme.default.css">
+    <link rel="stylesheet" type="text/css" href="/public/admin/treeTable/jquery.treetable.css">
+    <link rel="stylesheet" type="text/css" href="/public/admin/home/bootstrapSwitch.css">
+
+<?php echo $__env->yieldSection(); ?>  
+<?php $__env->startSection('nav'); ?>
+    <nav class="breadcrumb">
+        <i class="Hui-iconfont">&#xe67f;</i> 首页 <span class="c-gray en">&gt;</span> 管理员管理 <span class="c-gray en">&gt;</span> 角色管理 <a class="btn btn-success radius r" style="line-height:1.6em;margin-top:3px" href="javascript:location.replace(location.href);" title="刷新" ><i class="Hui-iconfont">&#xe68f;</i></a></nav>
+<?php $__env->stopSection(); ?>
+<?php $__env->startSection('body'); ?>
+    <div class="page-container">
+        <div class="cl pd-5 bg-1 bk-gray mt-20">
+            <span class="l">
+                
+                <a href="<?php echo e(route("nodeCreate")); ?>"  class="btn btn-primary radius"><i class="Hui-iconfont">&#xe607;</i> 添加节点</a>
+                <a href="<?php echo e(route("userindex")); ?>"  class="btn btn-primary radius"><i class="Hui-iconfont">&#xe62b;</i> 用户管理</a>
+                <a href="<?php echo e(route("nodeIndex")); ?>"  class="btn btn-primary radius"><i class="Hui-iconfont">&#xe70d;</i> 节点管理</a>
+            </span>
+            <span class="r">共有数据：<strong><?php echo e(count($result)); ?></strong> 条</span>
+        </div>
+
+
+<table class="table table-border table-bordered table-bg" id="nodetree">
+    <thead>
+    <tr>
+        <th scope="col" colspan="6">角色管理</th>
+    </tr>
+    <tr>
+        <th>节点名</th>
+        <th>链接</th>
+        <th>权值</th>
+        <th>排序</th>
+        <th>导航</th>
+        <th>操作</th>
+    </tr>
+    </thead>
+    <tbody>
+    <?php if(isset($result)): ?>
+        <?php
+        $tmp = '';
+        \App\ClassLib\Category::treeMap($result,function($v) use(&$tmp) {
+            $tmp .= '<tr data-tt-id="'.$v['node_id'].'" data-tt-parent-id="'.$v['pid'].'">';
+            $checkbox = '';
+//            if(empty($v['child'])) {
+//                $checkbox = '<input type="checkbox" class="node_id" value="'.$v['node_id'].'" lay-skin="primary">';
+//            }
+            $tmp .= '<td id="sp-'.$v['node_id'].'"><span class="'.(!empty($v['child']) ? 'folder' : 'file').'">'.$v['nodename'].'</span>'.$checkbox.'</td>';
+            if(stripos($v['url'],'javascript') === 0) {
+                $tmp .= '<td></td>';
+            }else{
+                $tmp .= '<td>'.$v['url'].'</td>';
+            }
+            $tmp .= '<td>'.$v['auth'].'</td>';
+            $tmp .= '<td><input data-node_id="'.$v['node_id'].'" value="'.$v['sortid'].'" style="width:55px;" class="input-text radius" placeholder="请输入ID" type="text"></td>';
+            $tmp .= '<td><div class="switch-on switch-animate switch has-switch" data-on="success" data-off="info">';
+            $tmp .= '<input  type="checkbox" value="'.$v['node_id'].'" '.($v['nav'] == \App\kai_node::NAV_SHOW ? 'checked' : '').'>';
+            $tmp .= '</div></td>';
+            $tmp .= '<td>';
+//                if(stripos($v['auth'],'Controller@index') == strlen($v['auth'])-strlen('Controller@index')) {
+//                    $tmp .= '<a class="layui-btn layui-btn-small" href="/admin/rbac/node/resource/'.$v['node_id'].'" title="点击自动添加资源节点">资源</a>';
+//                }
+            $tmp .= '<a  href="'.route('nodeCreate',['node_id'=>$v['node_id']]).'"><i class="Hui-iconfont">&#xe600;</i></a>';
+            $tmp .= '<a  href="'.route('nodeedit',['node_id'=>$v['node_id']]).'"><i class="Hui-iconfont">&#xe6df;</i></a>';
+            if(empty($v['child'])) $tmp .= '<a  href="'.route('nodedel',['node_id'=>$v['node_id']]).'" data-tip="1" data-_method="DELETE" data-id="'.$v['node_id'].'" data-url="'.route('nodedel').'" lay-filter="ajax-any"><i class="Hui-iconfont">&#xe6e2;</i></a>';
+            $tmp .= '</td>';
+            $tmp .= '</tr>';
+        });
+        echo $tmp;
+        ?>
+    <?php endif; ?>
+    </tbody>
+</table>
+    </div>
+<?php $__env->stopSection(); ?>
+<?php $__env->startSection('js'); ?>
+    
+    <script type="text/javascript" src="/public/admin/treeTable/jquery.treetable.js"></script>
+    <link rel="stylesheet" type="text/css" href="/public/admin/home/bootstrapSwitch.js">
+    <script type="text/javascript">
+        $(function(){
+            /**
+             * 初始化树形表格
+             */
+            $("#roletree").treetable({expandable: true});
+        });
+    </script>
+    
+        
+            
+            
+
+                
+
+                
+                
+                    
+                    
+                    
+                    
+                    
+                    
+                        
+                            
+                        
+                            
+                        
+                    
+                
+            
+        
+    
+    <script type="text/javascript">
+        
+         
+         
+        
+            
+            
+                
+                
+            
+            
+            
+        
+
+        /**
+         * 获取选中的node_id
+         */
+//        function getNodeId(data) {
+//            data['id'] = layui.comm.getChecked('.node_id');
+//            if(data['id'].length == 0) {
+//                layui.layer.msg('请勾选后操作');
+//                return null;
+//            }
+//            return data;
+//        }
+
+        $(function(){
+            /**
+             * 初始化树形表格 并展开节点到二级
+             */
+            $("#nodetree").treetable({expandable: true}).find('tr').each(function (i) {
+                var o = $(this)
+                if(o.attr('data-tt-parent-id') == 0 && o.siblings("[data-tt-parent-id='"+o.attr('data-tt-id')+"']").hasClass('leaf') == false) {
+                    $("#nodetree").treetable("expandNode", o.attr('data-tt-id'));
+                }
+            });
+
+            /**
+             * 滚动页面到指定id
+             */
+//            layui.use('comm', function () {
+//                layui.comm.scrollPage();
+//            });
+        });
+    </script>
+<?php $__env->stopSection(); ?>
+<?php echo $__env->make('layouts.layout_admin', array_except(get_defined_vars(), array('__data', '__path')))->render(); ?>

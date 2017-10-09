@@ -1,0 +1,183 @@
+<!DOCTYPE>
+<html>
+<head>
+    <title>后台登陆</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <link rel="stylesheet" type="text/css" href="/public/layui/css/layui.css" />
+    
+    <style>
+        *{padding:0;margin:0}
+        html{overflow:hidden}
+    </style>
+</head>
+<body class="login-body">
+
+<canvas id="canvas" style="background:#111;float:left;position:relative;">
+
+</canvas>
+<div class="login-box"  style="position:absolute;z-index:1;top:40%;left:38%;background-color:transparent ">
+    <form class="layui-form layui-form-pane" action="<?php echo e(route("login.store")); ?>" method="post" style="background-color:transparent ">
+        <div class="layui-form-item">
+            <h3 style="margin:centent;">
+                <span style="color:#ffffff;">网站后台管理系统</span><br />
+                <span class="version"></span>
+            </h3>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label" style="filter:alpha(Opacity=80);-moz-opacity:0.5;opacity: 0.5;">
+                用户名：</label>
+            <div class="layui-input-inline">
+                <input type="text" name="username" lay-verify="username" required lay-verify="required" autocomplete="off" class="layui-input" lay-verify="account" placeholder="请输入用户名" maxlength="20" style="filter:alpha(Opacity=80);-moz-opacity:0.5;opacity: 0.5;" />
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label" style="filter:alpha(Opacity=80);-moz-opacity:0.5;opacity: 0.5;">
+                密码：</label>
+            <div class="layui-input-inline">
+                <input type="password" required lay-verify="required" name="password" class="layui-input" lay-verify="password" placeholder="请输入密码" maxlength="20" style="filter:alpha(Opacity=80);-moz-opacity:0.5;opacity: 0.5;" />
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label" style="filter:alpha(Opacity=80);-moz-opacity:0.5;opacity: 0.5;">
+                验证码
+            </label>
+            
+            <div class="layui-input-inline" style="" >
+                <input type="text" name="captcha" id="captcha" placeholder="验证码" required lay-verify="required" autocomplete="off" class="layui-input" style="filter:alpha(Opacity=80);-moz-opacity:0.5;opacity: 0.5;">
+            </div>
+
+        </div>
+        <?php if(count($errors) > 0): ?>
+            <div class="layui-form-item" style="color: #DD4A68;">
+                <label class="layui-form-label"></label>
+                <div class="layui-input-inline">
+                    <?php $__currentLoopData = $errors->all(); $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $error): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                        <?php echo $error; ?>
+
+                    <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                </div>
+            </div>
+        <?php endif; ?>
+        <div class="layui-form-item" style="">
+            <a type="reset" class="layui-btn btn-reset layui-btn-danger" style="filter:alpha(Opacity=80);-moz-opacity:0.5;opacity: 0.5;">
+                重置</a>
+            <?php echo e(csrf_field()); ?>
+
+            <button  class="layui-btn btn-submit logSubmit" lay-submit lay-filter="signIn" style="filter:alpha(Opacity=80);-moz-opacity:0.5;opacity: 0.5;">
+                立即登录</button>
+            
+                <img style="height: 38px;width:100px;margin: 0 10px;display: none;" id="images" src="<?php echo e(captcha_src()); ?>" alt="验证码" onclick="this.src='/captcha/default?a='+Math.random(0,10)">
+            
+        </div>
+    </form>
+</div>
+<script type="text/javascript" src="http://apps.bdimg.com/libs/jquery/2.1.1/jquery.js"></script>
+<script type="text/javascript" src="/public/layui/layui.js"></script>
+
+<script type="text/javascript" src="/public/admin/script.js"></script>
+<script>
+    //Demo
+    layui.use(['form'], function(){
+        var form = layui.form;
+        form.verify({
+            username: function(value, item){ //value：表单的值、item：表单的DOM对象
+                if(!new RegExp("^[a-zA-Z0-9_\u4e00-\u9fa5\\s·]+$").test(value)){
+                    return '用户名不能有特殊字符';
+                }
+                if(/(^\_)|(\__)|(\_+$)/.test(value)){
+                    return '用户名首尾不能出现下划线\'_\'';
+                }
+                if(/^\d+\d+\d$/.test(value)){
+                    return '用户名不能全为数字';
+                }
+            }
+        });
+        //监听提交
+        form.on('submit(signIn)', function(data){
+            var result = post(data.form.action,data.field);
+            if(typeof result == 'object' && result.error){
+                layer.msg(result.msg, { icon: 6 });
+                layer.closeAll('page');
+                setTimeout(function () {
+                    location.href = result.url;
+                }, 1000);
+            }else{
+                layer.msg(result.msg, { icon: 5 });
+            }
+            return false;
+        });
+    });
+    $(document).ready(function(){
+       $("#captcha").focusin(function(){
+//          $("#captcha").css({ "width": "75px" });
+          $("#images").show();
+//          $("#images").css({"margin-lef":"5px"});
+       })
+    });
+// .focusin
+</script>
+<script type="text/javascript">
+
+    window.onload = function(){
+        //获取画布对象
+        var canvas = document.getElementById("canvas");
+        //获取画布的上下文
+        var context =canvas.getContext("2d");
+        //获取浏览器屏幕的宽度和高度
+        var W = window.innerWidth;
+        var H = window.innerHeight;
+        //设置canvas的宽度和高度
+        canvas.width = W;
+        canvas.height = H;
+        //每个文字的字体大小
+        var fontSize = 16;
+        //计算列
+        var colunms = Math.floor(W /fontSize);
+        //记录每列文字的y轴坐标
+        var drops = [];
+        //给每一个文字初始化一个起始点的位置
+        for(var i=0;i<colunms;i++){
+            drops.push(0);
+        }
+
+        //运动的文字
+        var str ="javascript html5 canvas";
+        //4:fillText(str,x,y);原理就是去更改y的坐标位置
+        //绘画的函数
+        function draw(){
+            context.fillStyle = "rgba(0,0,0,0.05)";
+            context.fillRect(0,0,W,H);
+            //给字体设置样式
+            context.font = "700 "+fontSize+"px  微软雅黑";
+            //给字体添加颜色
+            context.fillStyle ="#00cc33";//可以rgb,hsl, 标准色，十六进制颜色
+            //写入画布中
+            for(var i=0;i<colunms;i++){
+                var index = Math.floor(Math.random() * str.length);
+                var x = i*fontSize;
+                var y = drops[i] *fontSize;
+                context.fillText(str[index],x,y);
+                //如果要改变时间，肯定就是改变每次他的起点
+                if(y >= canvas.height && Math.random() > 0.99){
+                    drops[i] = 0;
+                }
+                drops[i]++;
+            }
+        };
+
+        function randColor(){
+            var r = Math.floor(Math.random() * 256);
+            var g = Math.floor(Math.random() * 256);
+            var b = Math.floor(Math.random() * 256);
+            return "rgb("+r+","+g+","+b+")";
+        }
+
+        draw();
+        setInterval(draw,30);
+    };
+
+</script>
+
+</body>
+</html>

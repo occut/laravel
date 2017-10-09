@@ -1,0 +1,164 @@
+@extends('Admin.layouts.layout_admin')
+@section('css')
+@endsection  {{--css--}}
+@section('nav')
+@endsection  {{--nav--}}
+@section('header')
+@endsection
+@section('main')
+    <main class="main-cont content mCustomScrollbar">
+        <div class="breadcrumb">
+            <ul>
+                <li><a href="{{route("index.index")}}">首页</a><i class="icon-angle-right"></i></li>
+                <li><a href="{{route("AdminNodes.index")}}">设置</a><i class="icon-angle-right"></i></li>
+                <li><a href="#">网站信息</a><i class="icon-angle-right"></i></li>
+            </ul>
+        </div>
+        <div class="page-wrap">
+            @if (Session::has('msg'))
+                <div class="alert alert-success">
+                    {{Session::get('msg')}}
+                </div>
+        @endif
+            <!--开始::内容-->
+            <div class="layui-tab layui-tab-card">
+                <ul class="layui-tab-title">
+                    <li class="layui-this">网站信息</li>
+                    <li>SEO设置</li>
+                </ul>
+                <div class="layui-tab-content">
+                    <div class="layui-tab-item layui-show">
+                        {{--网站信息设置Start--}}
+                        <form action="{{route('WebSettings.store')}}" method="post">
+                            <div class="form-group-col-2">
+                                <div class="form-label">网站名称：</div>
+                                <div class="form-cont">
+                                    <input type="text" name="site_name" value="{{$content->site_name}}" placeholder="网站名称..." class="form-control form-boxed" style="width:300px;">
+                                    <input type="hidden" name="site" value="name">
+                                    <input type="hidden" name="id" value="{{$content->site_id}}">
+                                </div>
+                            </div>
+                            <div class="form-group-col-2">
+                                <div class="form-label">网站域名：</div>
+                                <div class="form-cont">
+                                    <input type="text" name="site_domainname" value="{{$content->site_domainname}}" placeholder="域名..." class="form-control form-boxed" style="width:300px;">
+                                </div>
+                            </div>
+                            <div class="form-group-col-2">
+                                <div class="form-label">备案信息：</div>
+                                <div class="form-cont">
+                                    <input type="tel" name="site_filinginformation" value="{{$content->site_filinginformation}}" placeholder="备案信息..." class="form-control form-boxed" style="width:300px;">
+                                </div>
+                            </div>
+                            <div class="form-group-col-2">
+                                <div class="form-label">电子邮箱：</div>
+                                <div class="form-cont">
+                                    <input type="email" name="site_mail" value="{{$content->site_mail}}" placeholder="电子邮箱..." class="form-control form-boxed" style="width:300px;">
+                                </div>
+                            </div>
+                            <div class="form-group-col-2">
+                                <div class="form-label">版权信息：</div>
+                                <div class="form-cont">
+                                    <textarea class="form-control form-boxed" name="site_copyright" >{{$content->site_copyright}}</textarea>
+                                </div>
+                            </div>
+                                <div class="form-group-col-2">
+                                    <div class="form-label">网站logo：</div>
+                                    <div class="form-cont">
+                                        <img src="{{$content->site_logo}}" width="100px" height="100px" onclick="imgClick()" style="cursor: pointer" id="demo1">
+                                        <input type="file" name="file" onchange="fileSelected()" style="display: none" id="fileToUpload">
+                                    </div>
+                                </div>
+                            <div class="form-group-col-2">
+                                <div class="form-label"></div>
+                                <div class="form-cont">
+                                    {{csrf_field()}}
+                                    <input type="submit" class="btn btn-primary" value="提交表单" />
+                                    {{--<input type="reset" class="btn btn-disabled" value="禁止" />--}}
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                    {{--网站信息设置Over--}}
+                    {{--SEO设置Start--}}
+                    <div class="layui-tab-item">
+                        <form action="{{route('WebSettings.store')}}" method="post">
+                            <div class="form-group-col-2">
+                                <div class="form-label">SEO标题：</div>
+                                <div class="form-cont">
+                                    <input type="text" name="site_seotitle" value="{{$content->site_seotitle}}" placeholder="SEO标题..." class="form-control form-boxed" style="width:300px;">
+                                    <input type="hidden" name="id" value="{{$content->site_id}}">
+                                </div>
+                            </div>
+                            <div class="form-group-col-2">
+                                <div class="form-label">SEO关键字：</div>
+                                <div class="form-cont">
+                                    <input type="text" name="site_seokeyword" value="{{$content->site_seokeyword}}" placeholder="SEO关键字..." class="form-control form-boxed" style="width:300px;">
+                                </div>
+                            </div>
+                            <div class="form-group-col-2">
+                                <div class="form-label">SEO描述：</div>
+                                <div class="form-cont">
+                                    <textarea class="form-control form-boxed" name="site_seodescribe" style="width: 300px">{{$content->site_seodescribe}}</textarea>
+                                </div>
+                            </div>
+                            <div class="form-group-col-2">
+                                <div class="form-label"></div>
+                                <div class="form-cont">
+                                    {{csrf_field()}}
+                                    <input type="submit" class="btn btn-primary" value="提交表单" />
+                                    <input type="reset" class="btn btn-disabled" value="禁止" />
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                    {{--SEO设置Over--}}
+                </div>
+            </div>
+            <!--开始::结束-->
+        </div>
+
+    </main>
+@endsection  {{--nav--}}
+@section('footer')
+@endsection  {{--nav--}}
+@section('js')
+    <script>
+        function imgClick() {
+            document.getElementById("fileToUpload").click();
+        }
+        layui.use('upload', function(){
+            var $ = layui.jquery
+                ,upload = layui.upload;
+
+            //普通图片上传
+            var uploadInst = upload.render({
+                elem: '#fileToUpload'
+                ,url: '{{route('WebSettings/weight')}}'
+                ,before: function(obj){
+                    //预读本地文件示例，不支持ie8
+                    obj.preview(function(index, file, result){
+                        $('#demo1').attr('src', result); //图片链接（base64）
+                    });
+                }
+                ,done: function(res){
+                    //如果上传失败
+                    if(res.error){
+                        return layer.msg(res.msg);
+                    }else{
+                        return layer.msg(res.msg);
+                    }
+                    //上传成功
+                }
+                ,error: function(){
+                    //演示失败状态，并实现重传
+                    var demoText = $('#demoText');
+                    demoText.html('<span style="color: #FF5722;">上传失败</span> <a class="layui-btn layui-btn-mini demo-reload">重试</a>');
+                    demoText.find('.demo-reload').on('click', function(){
+                        uploadInst.upload();
+                    });
+                }
+            });
+        })
+    </script>
+@endsection  {{--nav--}}
