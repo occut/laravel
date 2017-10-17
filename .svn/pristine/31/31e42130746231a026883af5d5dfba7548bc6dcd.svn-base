@@ -1,0 +1,100 @@
+$(document).ready(function () {
+    var num = 1;
+    var checkbox = $("input[type='checkbox'][name='dcheckbox']");
+    $('#dcheckboxAll').on('click',function () {
+        if (num%2){
+            $.each(checkbox, function(i, n){
+                checkbox[i].checked = true;
+            });
+        }else{
+            $.each(checkbox, function(i, n){
+                checkbox[i].checked = false;
+            });
+        }
+        num++;
+    });
+});
+//删除js
+function deletes(obj,token,title) {
+    if (title == null){
+        title = '确定要删除吗？';
+    }
+    layer.confirm('确定要删除吗？', {
+        btn: ['确定', '取消'] //可以无限个按钮
+        ,yes: function(index, layero){
+            var url = obj.href;
+            $.ajax({
+                url:url,
+                data: {'_token':token},
+                type:'DELETE',
+                success:function (result) {
+                    //判断result结果
+                    if (result.error){
+                        layer.msg(result.msg, {icon: 6});
+                        window.location.reload();
+                    }else{
+                        layer.msg(result.msg, {icon: 5});
+                    }
+                }
+            })
+        }
+    }, function(index){
+        return false;
+    });
+}
+
+function post(action, formData,dataType) {
+    var result = '';
+    if(dataType === undefined){
+        dataType = 'json';
+    }
+    layui.use(['jquery'], function() {
+        $ = layui.jquery;//jquery
+        $.ajax({
+            type: 'post',
+            url: action,
+            data: formData, //'id=1&aid=2' {id:1,aid:2}
+            cache: false,
+            async: false,
+            dataType: dataType,
+            success: function (data) {
+                result = data;
+            },
+            error: function () {
+                result['error'] = true;
+                result['info'] = '请求异常！';
+            }
+        });
+    });
+    return result;
+}
+
+//批量删除提交
+function delAll (action,token,title) {
+    if(title === undefined){
+        title = '确认要删除吗？';
+    }
+    layer.confirm(title,function(index){
+        var checkbox = $("input[type='checkbox'][name='dcheckbox']");
+        var str = [];
+        $.each(checkbox, function(i, n){
+            if(checkbox[i].checked == true){
+                str[i] = checkbox[i].value;
+            }
+        });
+        $.ajax({
+            url:action,
+            data: {'_token':token,'id':str},
+            type:'DELETE',
+            success:function (result) {
+                //判断result结果
+                if (result.error){
+                    layer.msg(result.msg, {icon: 6});
+                    window.location.reload();
+                }else{
+                    layer.msg(result.msg, {icon: 5});
+                }
+            }
+        })
+    });
+}

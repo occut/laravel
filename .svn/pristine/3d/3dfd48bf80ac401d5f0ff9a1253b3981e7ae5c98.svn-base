@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title>canvas动画-会舞动的树</title>
+    <link rel="stylesheet" type="text/css" href="/public/layui/css/layui.css" />
+</head>
+<style>
+    body {
+        background: #000000;
+        background-size: cover;
+        margin: 0;
+        padding: 0;
+        overflow: hidden;
+        width:100%;
+    }
+
+</style>
+<body>
+<canvas id='canv'></canvas>
+<div class="login-box"  style="position:absolute;z-index:1;top:40%;left:70%;background-color:transparent ">
+    <form class="layui-form layui-form-pane" action="<?php echo e(route("login.store")); ?>" method="post" style="background-color:transparent ">
+        <div class="layui-form-item">
+            <h3 style="margin:auto;">
+                <span style="color:#ffffff;">网站后台管理系统</span><br />
+                <span class="version"></span>
+            </h3>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label" style="filter:alpha(Opacity=80);-moz-opacity:0.5;opacity: 0.5;">
+                用户名：</label>
+            <div class="layui-input-inline">
+                <input type="text" name="username" lay-verify="username" required lay-verify="required" autocomplete="off" class="layui-input" lay-verify="account" placeholder="请输入用户名" maxlength="20" style="filter:alpha(Opacity=80);-moz-opacity:0.5;opacity: 0.5;" />
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label" style="filter:alpha(Opacity=80);-moz-opacity:0.5;opacity: 0.5;">
+                密码：</label>
+            <div class="layui-input-inline">
+                <input type="password" required lay-verify="required" name="password" class="layui-input" lay-verify="password" placeholder="请输入密码" maxlength="20" style="filter:alpha(Opacity=80);-moz-opacity:0.5;opacity: 0.5;" />
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label" style="filter:alpha(Opacity=80);-moz-opacity:0.5;opacity: 0.5;">
+                验证码
+            </label>
+            
+            <div class="layui-input-inline" style="" >
+                <input type="text" name="captcha" id="captcha" placeholder="验证码" required lay-verify="required" autocomplete="off" class="layui-input" style="filter:alpha(Opacity=80);-moz-opacity:0.5;opacity: 0.5;">
+            </div>
+
+        </div>
+        <?php if(count($errors) > 0): ?>
+            <div class="layui-form-item" style="color: #DD4A68;">
+                <label class="layui-form-label"></label>
+                <div class="layui-input-inline">
+                    <?php $__currentLoopData = $errors->all(); $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $error): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                        <?php echo $error; ?>
+
+                    <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                </div>
+            </div>
+        <?php endif; ?>
+        <div class="layui-form-item" style="">
+            <a type="reset" class="layui-btn btn-reset layui-btn-danger" style="filter:alpha(Opacity=80);-moz-opacity:0.5;opacity: 0.5;">
+                重置</a>
+            <?php echo e(csrf_field()); ?>
+
+            <button  class="layui-btn btn-submit logSubmit" lay-submit lay-filter="signIn" style="filter:alpha(Opacity=80);-moz-opacity:0.5;opacity: 0.5;">
+                立即登录</button>
+            
+            <img style="height: 38px;width:100px;margin: 0 10px;display:;" id="images" src="<?php echo e(captcha_src()); ?>" alt="验证码" onclick="this.src='/captcha/default?a='+Math.random(0,10)">
+            
+        </div>
+    </form>
+</div>
+</body>
+</html>
+<script type="text/javascript" src="http://apps.bdimg.com/libs/jquery/2.1.1/jquery.js"></script>
+<script type="text/javascript" src="/public/layui/layui.js"></script>
+
+
+<script>
+    //Demo
+    layui.use(['form'], function(){
+        var form = layui.form;
+        form.verify({
+            username: function(value, item){ //value：表单的值、item：表单的DOM对象
+                if(!new RegExp("^[a-zA-Z0-9_\u4e00-\u9fa5\\s·]+$").test(value)){
+                    return '用户名不能有特殊字符';
+                }
+                if(/(^\_)|(\__)|(\_+$)/.test(value)){
+                    return '用户名首尾不能出现下划线\'_\'';
+                }
+                if(/^\d+\d+\d$/.test(value)){
+                    return '用户名不能全为数字';
+                }
+            }
+        });
+        //监听提交
+        form.on('submit(signIn)', function(data){
+            var result = post(data.form.action,data.field);
+            if(typeof result == 'object' && result.error){
+                layer.msg(result.msg, { icon: 6 });
+                layer.closeAll('page');
+                setTimeout(function () {
+                    location.href = result.url;
+                }, 1000);
+            }else{
+                layer.msg(result.msg, { icon: 5 });
+            }
+            return false;
+        });
+    });
+    function post(action, formData,dataType) {
+        var result = '';
+        if(dataType === undefined){
+            dataType = 'json';
+        }
+        layui.use(['jquery'], function() {
+            $ = layui.jquery;//jquery
+            $.ajax({
+                type: 'post',
+                url: action,
+                data: formData, //'id=1&aid=2' {id:1,aid:2}
+                cache: false,
+                async: false,
+                dataType: dataType,
+                success: function (data) {
+                    //    layer.close(index);
+                    result = data;
+                },
+                error: function () {
+                    result['error'] = true;
+                    result['info'] = '请求异常！';
+                }
+            });
+        });
+        return result;
+    }
+//        $(document).ready(function(){
+//           $("#captcha").focusin(function(){
+//               alert(132);
+//              $("#captcha").css({ "width": "75px" });
+//              $("#images").show();
+    //          $("#images").css({"margin-lef":"5px"});
+//           })
+//        });
+    // .focusin
+</script>
+<script>
+    var c = document.getElementById('canv');
+    var $ = c.getContext('2d');
+    var w = c.width = window.innerWidth;
+    var h = c.height = window.innerHeight;
+    var w2 = w* 0.5;
+    var h2 = h * 0.5;
+    var ŭ = 0;
+    var topiary = new branch(90, -30, 0);
+    var cnt = 0;
+
+    function anim(){
+        cnt++;
+        ŭ-=.5;
+        if (cnt%2) {
+            draw();
+
+        }
+        window.requestAnimationFrame(anim);
+    }
+    anim();
+
+
+
+
+    function draw() {
+        $.save();
+        $.clearRect(0, 0, w, h);
+        $.translate(w2, h*0.98);
+        $.rotate(Math.PI * 0.98);
+        topiary.disp($);
+        $.restore();
+    }
+
+    function branch(len, ang, gen){
+        this.len = len;
+        this.ang = ang;
+        this.gen = gen;
+        this.limb = [];
+        this.sway = 0;
+        this.mult = rnd(0.01, 0.1);
+        this.spawn = 0;
+        this.vel =0;
+
+        if(gen < 10){
+            this.limb.push(new branch(len*rnd(0.8, 0.99),
+                rnd(0, Math.PI/6), this.gen+1));
+            this.limb.push(new branch(len*rnd(0.8, 0.99),
+                rnd(0, -Math.PI/6), this.gen+1));
+        }
+
+        this.disp = function($){
+            this.sway++;
+            $.save();
+            this.vel *= 0.9;
+            var dif = 1-this.spawn;
+            this.vel += (dif*0.1);
+            this.spawn += this.vel;
+            $.strokeStyle = "hsla(" + (ŭ % 360) + ",100%,50%,1)";
+            $.alpha = .5;
+            $.lineWidth = 2;
+            $.beginPath();
+            $.rotate(this.ang + (Math.sin(this.sway*this.mult)*Math.PI/64));
+            $.moveTo(0, 0);
+            $.lineTo(this.len * this.spawn, 0);
+            $.stroke();
+
+            $.translate(this.len * this.spawn, 0);
+
+            if(this.spawn > 0.6){
+                for(var i = 0; i < this.limb.length; i++){
+                    var limb = this.limb[i];
+                    limb.disp($);
+                }
+            }
+            $.restore();
+        };
+    }
+
+
+
+    function rnd(min, max){
+        return Math.random()*(max - min) + min;
+    }
+
+</script>

@@ -1,0 +1,164 @@
+<?php $__env->startSection('css'); ?>
+<?php $__env->stopSection(); ?>  
+<?php $__env->startSection('nav'); ?>
+<?php $__env->stopSection(); ?>  
+<?php $__env->startSection('header'); ?>
+<?php $__env->stopSection(); ?>
+<?php $__env->startSection('main'); ?>
+    <main class="main-cont content mCustomScrollbar">
+        <div class="breadcrumb">
+            <ul>
+                <li><a href="<?php echo e(route("index.index")); ?>">首页</a><i class="icon-angle-right"></i></li>
+                
+                <li><a href="#">用户登录</a><i class="icon-angle-right"></i></li>
+            </ul>
+        </div>
+
+        <div class="page-wrap">
+            <!--开始::内容-->
+            <div class="layui-tab layui-tab-card">
+                <ul class="layui-tab-title">
+                    <li class="layui-this">玩家登录统计</li>
+                </ul>
+                <div class="layui-tab-content">
+                    
+                    <div class="layui-tab-item layui-show">
+                        <form action="<?php echo e(route('Administrators.store')); ?>" method="post">
+                            <div class="layui-form-item">
+                                <div class="layui-inline">
+                                    <div class="layui-input-inline" style="width: 200px;">
+                                        <input type="text" placeholder="请输入账号..." class="form-control form-boxed">
+                                    </div>
+                                </div>
+                                <div class="layui-inline">
+                                    <div class="layui-input-inline" style="width: 200px;">
+                                        <select name="city" lay-verify="">
+                                            <option>请选择渠道</option>
+                                            <option value="0">渠道一</option>
+                                            <option value="1">渠道二</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="layui-inline">
+                                    <div class="layui-input-inline" style="width: 200px;">
+                                        <input type="text" placeholder="等级..." class="form-control form-boxed">
+                                    </div>
+                                </div>
+                                <div class="layui-inline">
+                                    <div class="layui-input-inline" style="width: 200px;">
+                                        <input type="text" id="startTime" placeholder="开始时间" class="form-control form-boxed">
+                                    </div>
+                                    <div class="layui-form-mid">-</div>
+                                    <div class="layui-input-inline" style="width: 200px;">
+                                        <input type="text" id="endTime" placeholder="结束时间" class="form-control form-boxed">
+                                    </div>
+                                </div>
+                                <div class="layui-inline">
+                                    <div class="form-cont">
+                                        <div class="layui-input-inline">
+                                            <input type="submit" class="layui-btn" value="搜索" />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                        <div class="layui-inline">
+                            <button class="layui-btn layui-btn-small" onclick="delAll('<?php echo e(route("Account.delete",['id'=>'all'])); ?>','<?php echo e(csrf_token()); ?>')">删除</button>
+                        </div>
+                        <table class="layui-table">
+                            <thead>
+                            <tr>
+                                <th  style="text-align: center">
+                                    <input type="checkbox" id="dcheckboxAll">
+                                </th>
+                                <th>ID</th>
+                                <th>登录账号</th>
+                                <th>渠道</th>
+                                <th>登录时间</th>
+                                <th>操作</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <?php if(!empty($content)): ?>
+                                <?php $__currentLoopData = $content; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $k=>$v): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                    <tr class="cen">
+                                        <td>
+                                            <input type="checkbox" id="<?php echo e($v->account_id); ?>" value="<?php echo e($v->account_id); ?>" name="dcheckbox">
+                                        </td>
+                                        <td><?php echo e($v->account_id); ?></td>
+
+                                        <td><?php echo e($v->account_number); ?></td>
+                                        
+                                        
+                                        
+                                        
+
+
+                                        <td><?php echo e($v->account_channel); ?></td>
+                                        <td><?php echo e($v->account_time); ?></td>
+
+                                        
+                                        
+                                        
+                                        
+                                        
+                                        <td>
+                                            <a href="<?php echo e(route("Account.edit",['id'=>$v['account_id']])); ?>">编辑</a>
+                                            <a href="<?php echo e(route("Account.delete",['id'=>$v['account_id']])); ?>" onclick="deletes(this,'<?php echo e(csrf_token()); ?>');return false;">删除</a>
+                                        </td>
+                                    </tr>
+                                <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                            <?php endif; ?>
+                            <tr>
+                                <td>
+                                    <input type="checkbox">
+                                </td>
+                                <td>1</td>
+                                <td>登录账号</td>
+                                <td>渠道</td>
+                                <td>登录时间</td>
+                                <td>
+                                    <a href="#">编辑</a>
+                                    <a href="#">删除</a>
+                                </td>
+                            </tr>
+                            </tbody>
+                        </table>
+                        
+                        <div class="panel panel-default">
+                            <div class="panel-bd">
+                                <div class="pagination"></div>
+                            </div>
+                        </div>
+                        
+                    </div>
+                    
+                </div>
+            </div>
+        </div>
+        <!--开始::结束-->
+        </div>
+
+    </main>
+<?php $__env->stopSection(); ?>  
+<?php $__env->startSection('footer'); ?>
+<?php $__env->stopSection(); ?>  
+<?php $__env->startSection('js'); ?>
+    <script>
+        //        时间选择Start
+        layui.use('laydate', function(){
+            var laydate = layui.laydate;
+
+            //执行一个laydate实例
+            laydate.render({
+                elem: '#startTime' //指定元素
+            });
+            laydate.render({
+                elem: '#endTime' //指定元素
+            });
+        });
+        //        时间选择Over
+
+    </script>
+<?php $__env->stopSection(); ?>  
+<?php echo $__env->make('Admin.layouts.layout_admin', array_except(get_defined_vars(), array('__data', '__path')))->render(); ?>

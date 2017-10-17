@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8"/>
+    <title><?php echo e($site->site_name); ?></title>
+    <meta name="keywords"  content="设置关键词..." />
+    <meta name="description" content="设置描述..." />
+    <meta name="author" content="DeathGhost" />
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge, chrome=1">
+    <link rel="icon" href="<?php echo e($site->site_logo); ?>" type="image/x-icon">
+    <link rel="stylesheet" type="text/css" href="/public/layui/css/layui.css" />
+    <link rel="stylesheet" type="text/css" href="/public/css/style.css" />
+    <?php $__env->startSection('css'); ?>
+    <?php echo $__env->yieldSection(); ?>  
+</head>
+<body>
+<div class="main-wrap">
+        <div class="side-nav">
+            <div class="side-logo">
+                <div class="logo">
+				
+				<span>
+                    <img src="<?php echo e($site->site_logo); ?>" alt="<?php echo e($site->site_name); ?>" style="height: 15px;">
+					
+					
+					
+				</span>
+                    <strong><?php echo e($site->site_name); ?></strong>
+                </div>
+            </div>
+            <nav class="side-menu content mCustomScrollbar" data-mcs-theme="minimal-dark">
+                <h2>
+                    <a href="<?php echo e(route('index.index')); ?>" class="InitialPage"><i class="icon-dashboard"></i>首页</a>
+                </h2>
+                <ul class="tabchange">
+                    <?php $__currentLoopData = $parent; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $p): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                        <li id="li<?php echo e($p['node_id']); ?>">
+                            <dl>
+                                <dt s="1" onclick="sessionid(<?php echo e($p['node_id']); ?>)">
+                                    <i class="layui-icon"  style="padding-right: 5px"><?php echo e($p['icon']); ?></i><?php echo e($p['nodename']); ?><i class="icon-angle-right"></i>
+                                </dt>
+                               <?php if(isset($p['child'])): ?>
+                                    <?php $__currentLoopData = $p['child']; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $k): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                        <dd id="dd<?php echo e($k['node_id']); ?>" onclick="sessionidd(<?php echo e($k['node_id']); ?>)">
+                                            <a href="<?php echo e(route($k['url'])); ?>"><?php echo e($k['nodename']); ?></a>
+                                        </dd>
+                                    <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                                <?php endif; ?>
+                            </dl>
+                        </li>
+                    <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                </ul>
+            </nav>
+            <footer class="side-footer"><?php echo e($site->site_copyright); ?></footer>
+        </div>
+    <?php $__env->startSection('nav'); ?>
+    <?php echo $__env->yieldSection(); ?>  
+    <div class="content-wrap">
+        <?php $__env->startSection('header'); ?>
+        <?php echo $__env->yieldSection(); ?>  
+            <header class="top-hd">
+                <div class="hd-lt">
+                    <a class="icon-reorder"></a>
+                </div>
+                <div class="hd-rt">
+                    <ul>
+                        
+                            
+                        
+                        <li>
+                            <a href="<?php echo e(route("index.create")); ?>" onclick="Clearcache(this);return false;"><i class="icon-random"></i>清除缓存</a>
+                        </li>
+                        <li>
+                            <a><i class="icon-user"></i><?php echo e($adminnamerole['rolename']); ?>:<em><?php echo e($adminnamerole['name']); ?></em></a>
+                        </li>
+                        
+                            
+                        
+                        <li>
+                            <a href="javascript:void(0)" id="JsSignOut"><i class="icon-signout"></i>安全退出</a>
+                        </li>
+                    </ul>
+                </div>
+
+            </header>
+            <div id="dialog">
+                <h4></h4>
+            </div>
+
+        <?php $__env->startSection('main'); ?>
+                <main class="main-cont content mCustomScrollbar">
+                    <ul class="indexUl">
+                        <li>
+                            <p>
+                                <i class="layui-icon" style="font-size: 40px; color: #1E9FFF;vertical-align: middle">&#xe613;</i>
+                                <span>
+                                    <i>昨日注册人</i>
+                                <i>0</i>
+                                </span>
+
+                            </p>
+                            <p>
+                                <i class="layui-icon" style="font-size: 40px; color: #1E9FFF;vertical-align: middle">&#xe613;</i>
+                                <span>
+                                    <i>今日注册人</i>
+                                <i>0</i>
+                                </span>
+                            </p>
+                        </li>
+                        <li>
+                            <p>
+                                <i class="layui-icon" style="font-size: 40px; color: #FF7F50;vertical-align: middle">&#xe62c;</i>
+                                <span>
+                                    <i>昨日总流水</i>
+                                <i>0</i>
+                                </span>
+
+                            </p>
+                            <p>
+                                <i class="layui-icon" style="font-size: 40px; color: #FF7F50;vertical-align: middle">&#xe62c;</i>
+                                <span>
+                                    <i>今日总流水</i>
+                                <i>0</i>
+                                </span>
+                            </p>
+                        </li>
+                        <li>
+                            <p>
+                                <i class="layui-icon" style="font-size: 40px; color: #ED5565;vertical-align: middle">&#xe612;</i>
+                                <span>
+                                    <i>昨日付费人</i>
+                                <i>0</i>
+                                </span>
+
+                            </p>
+                            <p>
+                                <i class="layui-icon" style="font-size: 40px; color: #ED5565;vertical-align: middle">&#xe612;</i>
+                                <span>
+                                    <i>今日付费人</i>
+                                <i>0</i>
+                                </span>
+                            </p>
+                        </li>
+                        <li>
+                            <p>
+                                <i class="layui-icon" style="font-size: 40px; color: #F4A425;vertical-align: middle">&#xe629;</i>
+                                <span>
+                                    <i>昨日付费率</i>
+                                <i>0</i>
+                                </span>
+
+                            </p>
+                            <p>
+                                <i class="layui-icon" style="font-size: 40px; color: #F4A425;vertical-align: middle">&#xe629;</i>
+                                <span>
+                                    <i>今日付费率</i>
+                                <i>0</i>
+                                </span>
+                            </p>
+                        </li>
+                    </ul>
+                    <div id="chart-containerHome" style="margin-left:170px;">FusionCharts will render here</div>
+                </main>
+        <?php echo $__env->yieldSection(); ?>  
+        <?php $__env->startSection('footer'); ?>
+        <?php echo $__env->yieldSection(); ?>  
+            <footer class="btm-ft">
+                <p class="clear">
+                    <span class="fl"><?php echo e($site->site_copyright); ?><a href="#" title="DeathGhost" target="_blank"><?php echo e($site->site_domainname); ?></a></span>
+                    <span class="fr text-info">
+					<em class="uppercase">
+						<i class="icon-user"></i>
+                        <?php echo e($site->site_name); ?>
+
+					</em> |
+                        <?php echo e($site->site_filinginformation); ?>
+
+				</span>
+                </p>
+            </footer>
+    </div>
+</div>
+<script src="/public/js/jquery.js"></script>
+<script src="/public/js/plug-ins/customScrollbar.min.js"></script>
+<script src="/public/js/plug-ins/layerUi/layer.js"></script>
+<script src="/public/layui/layui.js"></script>
+<script src="/public/layui/layui.all.js"></script>
+<script src="/public/js/plug-ins/pagination.js"></script>
+<script src="/public/js/public.js"></script>
+<script src="/public/js/fusioncharts.js"></script>
+
+<script src="/public/admin/admin.js"></script>
+
+<script src="/public/admin/js.js"></script>
+<script src="/public/common/jquerysession.js"></script>
+<script>
+    var a = $.session.get('key');
+    var b = "#li"+a;
+    var c = $.session.get('keys');
+    var d = "#dd"+c;
+    console.log(b);
+    console.log(d);
+    function sessionid(id){
+        $.session.set('key', id);
+    }
+    function sessionidd(id){
+        $.session.set('keys', id);
+    }
+    $(b).addClass("open");
+    $(d).css("background","#2d363f");
+    $(".tabchange li dd").click(function () {
+        var name=$(this).find("a").html();
+        var to = "<?php echo e(csrf_token()); ?>"
+        $.ajax({
+            url:"{('Index/getName')}",
+            type:"post",
+            data:{'_token': to,"name":name},
+            dataType:"json",
+            async:false,
+            success:function (result) {
+                alert(result);
+            }
+        });
+    });
+    function Clearcache(obj) {
+        layer.confirm('确定要清除缓存么吗？', {
+            btn: ['确定', '我在想想'] //可以无限个按钮
+            ,yes: function(index, layero){
+                var url = obj.href;
+                var to = "<?php echo e(csrf_token()); ?>";
+                $.ajax({
+                    url:url,
+                    data: {},
+                    type:'get',
+                    success:function (result) {
+                        //判断result结果
+                        if (result.error){
+                            layer.msg(result.msg, {icon: 6});
+                            window.location.reload();
+                        }else{
+                            layer.msg(result.msg, {icon: 5});
+                        }
+                    }
+                })
+            }
+        }, function(index){
+            return false;
+        });
+    }
+    //        提示框Start
+    if($(".sec .al").text()!=""){
+        if ($(".sec p").text()==1 || $(".sec .al").text()==0){
+            layer.msg($(".sec .al").text(), {icon: 6});
+        }else{
+            layer.msg($(".sec .al").text(), {icon: 5});
+        }
+    }
+    //        提示框Over
+    // 修改状态Start
+    function changeStatus(obj,id,url){
+        var num=$(obj).attr("num");
+        if(num==1){
+            num = 0;
+        }else{
+            num = 1;
+        }
+        $.ajax({
+            url:url,
+            type:"post",
+            data:{'_token':"<?php echo e(csrf_token()); ?>",'num':num,'game_id':id},
+            dataType:"json",
+            async:false,
+            success:function (result) {
+                if (result == 1){
+                    layer.msg("更新状态成功",{icon:6,time:1000});
+                    location.reload();
+                }else{
+                    layer.msg("更新状态失败",{icon:5,time:1000});
+                }
+            }
+        });
+    }
+    // 修改状态Over
+//    排序Start
+
+//    排序Over
+</script>
+<?php $__env->startSection('js'); ?>
+    <script src="/public/js/charts.js"></script>
+<?php echo $__env->yieldSection(); ?>  
+</body>
+</html>

@@ -1,0 +1,164 @@
+<?php $__env->startSection('css'); ?>
+<?php $__env->stopSection(); ?>  
+<?php $__env->startSection('nav'); ?>
+<?php $__env->stopSection(); ?>  
+<?php $__env->startSection('header'); ?>
+    <header class="top-hd">
+        <div class="hd-lt">
+            <a class="icon-reorder"></a>
+        </div>
+    </header>
+<?php $__env->stopSection(); ?>
+<?php $__env->startSection('main'); ?>
+    <main class="main-cont content mCustomScrollbar">
+        <div class="page-wrap">
+            <section class="page-hd" style="display: none">
+                <?php if(Session::has('msg')): ?>
+                    <div class="alert alert-success" style="width: auto;padding: 10px;cursor: pointer"><?php echo e(Session::get('msg')); ?></div>
+                    <p><?php echo e(Session::get('error')); ?></p>
+                <?php endif; ?>
+            </section>
+            <div class="layui-tab layui-tab-card">
+                <ul class="layui-tab-title">
+                    <li><a href="<?php echo e(route('Area.index')); ?>" class="layui-this">所有区服</a></li>
+                    <li><a href="<?php echo e(route('Area.create')); ?>">添加区服</a></li>
+                </ul>
+                
+                <div class="layui-tab-content">
+                    <div class="layui-tab-item layui-show">
+                        <form action="<?php echo e(route('Area.index')); ?>" method="post">
+                            <div class="layui-form-item">
+                                <div class="layui-inline">
+                                    <div class="layui-input-inline" style="width: 200px;">
+                                        <select name="game_name">
+                                            <option value="0">请选择所属游戏</option>
+                                            <?php $__currentLoopData = $game; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $g): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                                <option value="<?php echo e($g->game_id); ?>"><?php echo e($g->game_name); ?></option>
+                                            <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="layui-inline">
+                                    <div class="layui-input-inline" style="width: 200px;">
+                                        <select name="recommend">
+                                            <option value="0">请选择状态</option>
+                                            <option value="1">推荐</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="layui-inline">
+                                    <div class="layui-input-inline" style="width: 200px;">
+                                        <select name="stop">
+                                            <option value="0">请选择是否停服</option>
+                                            <option value="1">停服</option>
+                                            <option value="2">不停服</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="layui-inline">
+                                    <div class="layui-input-inline" style="width: 200px;">
+                                        <input type="text" name="area_name" placeholder="请输入区服名称..." class="form-control form-boxed">
+                                    </div>
+                                </div>
+                                <div class="layui-inline">
+                                    <div class="form-cont">
+                                        <div class="layui-input-inline">
+                                            <?php echo e(csrf_field()); ?>
+
+                                            <input type="submit" class="layui-btn" value="搜索" />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                        <div class="layui-inline">
+                            <button class="layui-btn layui-btn-small" onclick="delAll('<?php echo e(route("Area.delete",['id'=>'yes'])); ?>','<?php echo e(csrf_token()); ?>','确认要修改吗')">推荐</button>
+                            <button class="layui-btn layui-btn-small" onclick="delAll('<?php echo e(route("Area.delete",['id'=>'no'])); ?>','<?php echo e(csrf_token()); ?>','确认要修改吗')">不推荐</button>
+                            <button class="layui-btn layui-btn-small" onclick="delAll('<?php echo e(route("Area.delete",['id'=>0])); ?>','<?php echo e(csrf_token()); ?>','确认要停服吗')">停服</button>
+                            <button class="layui-btn layui-btn-small" onclick="delAll('<?php echo e(route("Area.delete",['id'=>1])); ?>','<?php echo e(csrf_token()); ?>','确认要关闭吗')">不停服</button>
+                            <button class="layui-btn layui-btn-small" onclick="delAll('<?php echo e(route("Area.delete",['id'=>'all'])); ?>','<?php echo e(csrf_token()); ?>')">删除</button>
+                        </div>
+                        <table class="layui-table">
+                            <thead>
+                            <tr>
+                                <th>
+                                    <input type="checkbox" id="dcheckboxAll">
+                                </th>
+                                <th>ID</th>
+                                <th>游戏名称</th>
+                                <th>区服名称</th>
+                                <th>推荐</th>
+                                <th>是否停服	</th>
+                                <th>开服时间</th>
+                                <th>操作</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                                <?php if(!empty($content)): ?>
+                                    <?php $__currentLoopData = $content; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $con): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                <tr>
+                                    <td>
+                                        <input type="checkbox" value="<?php echo e($con->area_id); ?>" name="dcheckbox">
+                                    </td>
+                                    <td><?php echo e($con->area_id); ?></td>
+                                    <td>
+                                        <?php $__currentLoopData = $game; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $g): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                            <?php if($con->game_name==$g->game_id): ?><?php echo e($g->game_name); ?><?php endif; ?>
+                                        <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                                    </td>
+                                    <td><?php echo e($con->area_name); ?></td>
+                                    <td>
+                                        <?php if($con->recommend==0): ?>不推荐 <?php else: ?> 推荐 <?php endif; ?>
+                                    </td>
+                                    <td>
+                                        <?php if($con->stop==0): ?>停服 <?php else: ?> 不停服 <?php endif; ?>
+                                    </td>
+                                    <td><?php echo e($con->time); ?></td>
+                                    <td>
+                                        <a href="<?php echo e(route('Area.edit',['area_id'=>$con->area_id])); ?>">编辑</a>
+                                        <a href="<?php echo e(route('Area.delete',['id'=>$con->area_id])); ?>" onclick="deletes(this,'<?php echo e(csrf_token()); ?>');return false;">删除</a>
+                                    </td>
+                                </tr>
+                                    <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                                <?php endif; ?>
+                            </tbody>
+                        </table>
+                        
+                        共<?php echo e($total); ?>条
+                        <?php if(!empty($content)): ?>
+                            <?php echo e($content->links("pagination.default")); ?>
+
+                        <?php endif; ?>
+                        
+                    </div>
+                    
+                </div>
+            </div>
+        </div>
+        <!--开始::结束-->
+        </div>
+
+    </main>
+<?php $__env->stopSection(); ?>  
+<?php $__env->startSection('footer'); ?>
+<?php $__env->stopSection(); ?>  
+<?php $__env->startSection('js'); ?>
+    <script>
+        
+        function imgClick() {
+            document.getElementById("fileToUpload").click();
+        }
+        
+//        时间选择Start
+        layui.use('laydate', function(){
+            var laydate = layui.laydate;
+
+            //执行一个laydate实例
+            laydate.render({
+                elem: '#time' //指定元素
+            });
+        });
+//        时间选择Over
+    </script>
+<?php $__env->stopSection(); ?>  
+<?php echo $__env->make('Admin.layouts.layout_admin', array_except(get_defined_vars(), array('__data', '__path')))->render(); ?>

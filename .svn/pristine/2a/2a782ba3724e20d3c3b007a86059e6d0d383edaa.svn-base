@@ -1,0 +1,163 @@
+@extends('Admin.layouts.layout_admin')
+@section('css')
+@endsection  {{--css--}}
+@section('nav')
+@endsection  {{--nav--}}
+@section('header')
+    <header class="top-hd">
+
+        <div class="hd-lt">
+            <a class="icon-reorder"></a>
+        </div>
+    </header>
+@endsection
+@section('main')
+    <main class="main-cont content mCustomScrollbar">
+        <div class="page-wrap">
+            <section class="page-hd" style="display: none">
+                @if (Session::has('msg'))
+                    <div class="alert alert-success" style="width: auto;padding: 10px;cursor: pointer">{{Session::get('msg')}}</div>
+                    <p>{{Session::get('error')}}</p>
+                @endif
+            </section>
+            <div class="layui-tab layui-tab-card">
+                <ul class="layui-tab-title">
+                    <li><a href="{{route('Game.index')}}" class="layui-this">所有游戏</a></li>
+                    <li><a href="{{route('Game.create')}}">添加游戏</a></li>
+                </ul>
+                {{--游戏管理之游戏管理Start--}}
+                <div class="layui-tab-content">
+                    <div class="layui-tab-item layui-show">
+                        <form action="{{route('Game.search')}}" method="post">
+                            <div class="layui-form-item">
+                                <div class="layui-inline">
+                                    <div class="layui-input-inline" style="width: 200px;">
+                                        <select name="game_type">
+                                            <option value="">请选择类型</option>
+                                            <option value="1">休闲益智</option>
+                                            <option value="2">网络游戏</option>
+                                            <option value="3">体育竞速</option>
+                                            <option value="4">角色扮演</option>
+                                            <option value="5">飞行射击</option>
+                                            <option value="6">策略经营</option>
+                                            <option value="7">卡片棋牌</option>
+                                            <option value="8">动作冒险</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="layui-inline">
+                                    <div class="layui-inline">
+                                        <div class="layui-input-inline" style="width: 200px;">
+                                            <input type="text" name="game_name" placeholder="请输入游戏名称..." class="form-control form-boxed">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="layui-inline">
+                                    <div class="form-cont">
+                                        <div class="layui-input-inline">
+                                            {{csrf_field()}}
+                                            <input type="submit" class="layui-btn" value="搜索" />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                        <div class="layui-inline">
+                            <button class="layui-btn layui-btn-small">推荐</button>
+                            <button class="layui-btn layui-btn-small">不推荐</button>
+                            <button class="layui-btn layui-btn-small">排序</button>
+                            <button class="layui-btn layui-btn-small">开启</button>
+                            <button class="layui-btn layui-btn-small">关闭</button>
+                            <button class="layui-btn layui-btn-small" onclick="delAll('{{route("Game.delete",['id'=>'all'])}}','{{csrf_token()}}')">删除</button>
+                        </div>
+                        <table class="layui-table">
+                            <thead>
+                            <tr>
+                                <th>
+                                    <input type="checkbox" id="dcheckboxAll">
+                                </th>
+                                <th>ID</th>
+                                <th>排序</th>
+                                <th>游戏类型</th>
+                                <th>游戏名称</th>
+                                <th>游戏星级</th>
+                                <th>收费模式</th>
+                                <th>推荐</th>
+                                <th>状态</th>
+                                <th>Android下载地址</th>
+                                <th>Android版本</th>
+                                <th>IOS下载地址</th>
+                                <th>IOS版本</th>
+                                <th>游戏下载数量	</th>
+                                <th>推广类型</th>
+                                <th>语言</th>
+                                <th>游戏大小	</th>
+                                <th>操作</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            @foreach($page as $vo)
+                                <tr>
+                                    <td>
+                                        <input type="checkbox" value="{{$vo->game_id}}" name="dcheckbox">
+                                    </td>
+                                    <td>
+                                        <input type="number" min="0" value="{{$vo->game_order}}" style="width: 50px" id="order" onkeyup="orderBy(this)">
+                                    </td>
+                                    <td>{{$vo->game_id}}</td>
+                                    <td>@if($vo->game_type==1) 休闲益智 @elseif($vo->level==2) 网络游戏 @elseif($vo->game_type==3) 体育竞速 @elseif($vo->game_type==4) 角色扮演 @elseif($vo->game_type==5) 飞行射击 @elseif($vo->game_type==6)策略经营@elseif($vo->game_type==7)卡片棋牌@else动作冒险 @endif</td>
+                                    <td>{{$vo->game_name}}</td>
+                                    <td>@if($vo->level==1) ★ @elseif($vo->level==2) ★★ @elseif($vo->level==3) ★★★ @elseif($vo->level==4) ★★★★ @else ★★★★ @endif</td>
+                                    <td>{{$vo->charge_mode}}</td>
+                                    <td>@if($vo->recommandOrnot==0)不推荐 @else推荐 @endif</td>
+                                    <td>
+                                        <a href="javascript:void (0)" onclick="changeStatus(this,{{$vo->game_id}},'{{route("Game.isOn")}}')" style="color: @if($vo->status == 0)red @else #19A094 @endif"  num="{{$vo->status}}">
+                                            @if($vo->status == 0)已关闭 @else 已开启 @endif
+                                        </a>
+                                    </td>
+                                    <td>{{$vo->and_addr}}</td>
+                                    <td>{{$vo->and_version}}</td>
+                                    <td>{{$vo->ios_addr}}</td>
+                                    <td>{{$vo->ios_version}}</td>
+                                    <td>{{$vo->downloaded_num}}</td>
+                                    <td>@if($vo->language==0)中文 @else英文 @endif</td>
+                                    <td>@if($vo->promoted_type==0) CPS推广 @elseif($vo->promoted_type==1) CPA推广 @else CPS推广和CPA推广 @endif</td>
+                                    <td>{{$vo->game_size}}</td>
+                                    <td>
+                                        <a href="{{route('Game.edit',['game_id'=>$vo->game_id])}}">编辑</a>
+                                        <a href="{{route('Game.delete',['game_id'=>$vo->game_id])}}" onclick="deletes(this,'{{csrf_token()}}');return false;">删除</a>
+                                    </td>
+                                </tr>
+                            @endforeach
+                            </tbody>
+                        </table>
+                        {{--分页Start--}}
+                        共{{$total}}条
+                        @if(!empty($page))
+                            {{$page->links("pagination.default")}}
+                        @endif
+                        {{--分页Over--}}
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+            <!--开始::结束-->
+        </div>
+
+    </main>
+@endsection  {{--nav--}}
+@section('footer')
+@endsection  {{--nav--}}
+@section('js')
+    <script>
+
+        function iosClick() {
+            document.getElementById("iosUpload").click();
+        }
+        function andClick() {
+            document.getElementById("andUpload").click();
+        }
+
+    </script>
+@endsection  {{--nav--}}

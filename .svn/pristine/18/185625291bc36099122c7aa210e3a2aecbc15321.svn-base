@@ -1,0 +1,165 @@
+<?php $__env->startSection('css'); ?>
+<?php $__env->stopSection(); ?>  
+<?php $__env->startSection('nav'); ?>
+<?php $__env->stopSection(); ?>  
+<?php $__env->startSection('header'); ?>
+    <header class="top-hd">
+
+        <div class="hd-lt">
+            <a class="icon-reorder"></a>
+        </div>
+    </header>
+<?php $__env->stopSection(); ?>
+<?php $__env->startSection('main'); ?>
+    <main class="main-cont content mCustomScrollbar">
+        <div class="page-wrap">
+            <section class="page-hd" style="display: none">
+                <?php if(Session::has('msg')): ?>
+                    <div class="alert alert-success" style="width: auto;padding: 10px;cursor: pointer"><?php echo e(Session::get('msg')); ?></div>
+                    <p><?php echo e(Session::get('error')); ?></p>
+                <?php endif; ?>
+            </section>
+            <div class="layui-tab layui-tab-card">
+                <ul class="layui-tab-title">
+                    <li><a href="<?php echo e(route('Game.index')); ?>" class="layui-this">所有游戏</a></li>
+                    <li><a href="<?php echo e(route('Game.create')); ?>">添加游戏</a></li>
+                </ul>
+                
+                <div class="layui-tab-content">
+                    <div class="layui-tab-item layui-show">
+                        <form action="<?php echo e(route('Game.search')); ?>" method="post">
+                            <div class="layui-form-item">
+                                <div class="layui-inline">
+                                    <div class="layui-input-inline" style="width: 200px;">
+                                        <select name="game_type">
+                                            <option value="">请选择类型</option>
+                                            <option value="1">休闲益智</option>
+                                            <option value="2">网络游戏</option>
+                                            <option value="3">体育竞速</option>
+                                            <option value="4">角色扮演</option>
+                                            <option value="5">飞行射击</option>
+                                            <option value="6">策略经营</option>
+                                            <option value="7">卡片棋牌</option>
+                                            <option value="8">动作冒险</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="layui-inline">
+                                    <div class="layui-inline">
+                                        <div class="layui-input-inline" style="width: 200px;">
+                                            <input type="text" name="game_name" placeholder="请输入游戏名称..." class="form-control form-boxed">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="layui-inline">
+                                    <div class="form-cont">
+                                        <div class="layui-input-inline">
+                                            <?php echo e(csrf_field()); ?>
+
+                                            <input type="submit" class="layui-btn" value="搜索" />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                        <div class="layui-inline">
+                            <button class="layui-btn layui-btn-small">推荐</button>
+                            <button class="layui-btn layui-btn-small">不推荐</button>
+                            <button class="layui-btn layui-btn-small">排序</button>
+                            <button class="layui-btn layui-btn-small">开启</button>
+                            <button class="layui-btn layui-btn-small">关闭</button>
+                            <button class="layui-btn layui-btn-small" onclick="delAll('<?php echo e(route("Game.delete",['id'=>'all'])); ?>','<?php echo e(csrf_token()); ?>')">删除</button>
+                        </div>
+                        <table class="layui-table">
+                            <thead>
+                            <tr>
+                                <th>
+                                    <input type="checkbox" id="dcheckboxAll">
+                                </th>
+                                <th>ID</th>
+                                <th>排序</th>
+                                <th>游戏类型</th>
+                                <th>游戏名称</th>
+                                <th>游戏星级</th>
+                                <th>收费模式</th>
+                                <th>推荐</th>
+                                <th>状态</th>
+                                <th>Android下载地址</th>
+                                <th>Android版本</th>
+                                <th>IOS下载地址</th>
+                                <th>IOS版本</th>
+                                <th>游戏下载数量	</th>
+                                <th>推广类型</th>
+                                <th>语言</th>
+                                <th>游戏大小	</th>
+                                <th>操作</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <?php $__currentLoopData = $page; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $vo): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                <tr>
+                                    <td>
+                                        <input type="checkbox" value="<?php echo e($vo->game_id); ?>" name="dcheckbox">
+                                    </td>
+                                    <td>
+                                        <input type="number" min="0" value="<?php echo e($vo->game_order); ?>" style="width: 50px" id="order" onkeyup="orderBy(this)">
+                                    </td>
+                                    <td><?php echo e($vo->game_id); ?></td>
+                                    <td><?php if($vo->game_type==1): ?> 休闲益智 <?php elseif($vo->level==2): ?> 网络游戏 <?php elseif($vo->game_type==3): ?> 体育竞速 <?php elseif($vo->game_type==4): ?> 角色扮演 <?php elseif($vo->game_type==5): ?> 飞行射击 <?php elseif($vo->game_type==6): ?>策略经营<?php elseif($vo->game_type==7): ?>卡片棋牌<?php else: ?>动作冒险 <?php endif; ?></td>
+                                    <td><?php echo e($vo->game_name); ?></td>
+                                    <td><?php if($vo->level==1): ?> ★ <?php elseif($vo->level==2): ?> ★★ <?php elseif($vo->level==3): ?> ★★★ <?php elseif($vo->level==4): ?> ★★★★ <?php else: ?> ★★★★ <?php endif; ?></td>
+                                    <td><?php echo e($vo->charge_mode); ?></td>
+                                    <td><?php if($vo->recommandOrnot==0): ?>不推荐 <?php else: ?>推荐 <?php endif; ?></td>
+                                    <td>
+                                        <a href="javascript:void (0)" onclick="changeStatus(this,<?php echo e($vo->game_id); ?>,'<?php echo e(route("Game.isOn")); ?>')" style="color: <?php if($vo->status == 0): ?>red <?php else: ?> #19A094 <?php endif; ?>"  num="<?php echo e($vo->status); ?>">
+                                            <?php if($vo->status == 0): ?>已关闭 <?php else: ?> 已开启 <?php endif; ?>
+                                        </a>
+                                    </td>
+                                    <td><?php echo e($vo->and_addr); ?></td>
+                                    <td><?php echo e($vo->and_version); ?></td>
+                                    <td><?php echo e($vo->ios_addr); ?></td>
+                                    <td><?php echo e($vo->ios_version); ?></td>
+                                    <td><?php echo e($vo->downloaded_num); ?></td>
+                                    <td><?php if($vo->language==0): ?>中文 <?php else: ?>英文 <?php endif; ?></td>
+                                    <td><?php if($vo->promoted_type==0): ?> CPS推广 <?php elseif($vo->promoted_type==1): ?> CPA推广 <?php else: ?> CPS推广和CPA推广 <?php endif; ?></td>
+                                    <td><?php echo e($vo->game_size); ?></td>
+                                    <td>
+                                        <a href="<?php echo e(route('Game.edit',['game_id'=>$vo->game_id])); ?>">编辑</a>
+                                        <a href="<?php echo e(route('Game.delete',['game_id'=>$vo->game_id])); ?>" onclick="deletes(this,'<?php echo e(csrf_token()); ?>');return false;">删除</a>
+                                    </td>
+                                </tr>
+                            <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                            </tbody>
+                        </table>
+                        
+                        共<?php echo e($total); ?>条
+                        <?php if(!empty($page)): ?>
+                            <?php echo e($page->links("pagination.default")); ?>
+
+                        <?php endif; ?>
+                        
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+            <!--开始::结束-->
+        </div>
+
+    </main>
+<?php $__env->stopSection(); ?>  
+<?php $__env->startSection('footer'); ?>
+<?php $__env->stopSection(); ?>  
+<?php $__env->startSection('js'); ?>
+    <script>
+
+        function iosClick() {
+            document.getElementById("iosUpload").click();
+        }
+        function andClick() {
+            document.getElementById("andUpload").click();
+        }
+
+    </script>
+<?php $__env->stopSection(); ?>  
+<?php echo $__env->make('Admin.layouts.layout_admin', array_except(get_defined_vars(), array('__data', '__path')))->render(); ?>

@@ -1,0 +1,95 @@
+    
+    <?php $__env->startSection('css'); ?>
+    <?php $__env->stopSection(); ?>  
+    <?php $__env->startSection('nav'); ?>
+    <?php $__env->stopSection(); ?>  
+    <?php $__env->startSection('header'); ?>
+    <?php $__env->stopSection(); ?>  
+
+    <?php $__env->startSection('main'); ?>
+        <main class="main-cont content mCustomScrollbar">
+            <div class="breadcrumb">
+                <ul>
+                    <li><a href="<?php echo e(route("index.index")); ?>">首页</a><i class="icon-angle-right"></i></li>
+                    <li><a href="#">用户管理</a><i class="icon-angle-right"></i></li>
+                </ul>
+            </div>
+
+            <div style="margin:5px 0px">
+                <button class="btn btn-secondary-outline"><a href="<?php echo e(route("Administrators.create")); ?>">添加</a></button>
+            </div>
+            <?php if(Session::has('msg')): ?>
+                <div class="alert alert-success">
+                    <?php echo e(Session::get('msg')); ?>
+
+                </div>
+            <?php endif; ?>
+
+        <!--开始::内容-->
+            <table class="table table-bordered table-striped table-hover">
+                <thead>
+                <tr>
+                    <th>id</th>
+                    <th>姓名</th>
+                    <th>状态</th>
+                    <th>时间</th>
+                    <th>操作</th>
+                </tr>
+                </thead>
+                <tbody>
+                <?php if(isset($content)): ?>
+                    <?php $__currentLoopData = $content; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $k=>$v): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                        <tr class="cen">
+                            <td><?php echo e($v->user_id); ?></td>
+                            <td><a href="#"><?php echo e($v->username); ?></a></td>
+                            <td><?php echo e($v->ban == \App\Model\AdminUser::BAN_NO ? '正常' : '禁止'); ?></td>
+                            <td><?php echo e($v->created_at); ?></td>
+                            <td>
+                                <a title="添加" class="mr-5" href="<?php echo e(route("Administrators.create",['id'=>$v['user_id']])); ?>">添加</a>
+                                <a title="权值" class="mr-5" href="<?php echo e(route("Administrators.edit",['id'=>$v['user_id']])); ?>">权值</a>
+                                <a title="删除" href="<?php echo e(route("Administrators.delete",['id'=>$v['user_id']])); ?>" onclick="DELETEall(this);return false;">删除</a>
+                            </td>
+                        </tr>
+                    <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                <?php endif; ?>
+                </tbody>
+            </table>
+            <?php echo e($content->links("pagination.default")); ?>
+
+
+        </main>
+    <?php $__env->stopSection(); ?>  
+    <?php $__env->startSection('footer'); ?>
+    <?php $__env->stopSection(); ?>  
+    <?php $__env->startSection('js'); ?>
+        <script type="text/javascript" src="/public/layui/layui.js"></script>
+        <script>
+            function DELETEall(node) {
+                var url = node.href;
+                var to = "<?php echo e(csrf_token()); ?>";
+                $.ajax({
+                    url:url,
+                    data: {'_token':to},
+                    type:'DELETE',
+                    success:function (result) {
+                        //判断result结果
+                        if (result.error){
+                            $("#dialog").fadeIn();
+                            $("#dialog h4").html(result.msg);
+                            setTimeout(function () {
+                                $("#dialog").fadeOut();
+                            },1000);
+                            window.location.reload();
+                        }else{
+                            $("#dialog").fadeOut();
+                            $("#dialog h4").html(result.msg);
+                            setTimeout(function () {
+                                $("#dialog").fadeIn();
+                            },2000);
+                        }
+                    }
+                })
+            };
+        </script>
+    <?php $__env->stopSection(); ?>  
+<?php echo $__env->make('Admin.layouts.layout_admin', array_except(get_defined_vars(), array('__data', '__path')))->render(); ?>

@@ -1,0 +1,161 @@
+<?php
+
+namespace App\Http\Controllers\Admin;
+
+use App\Model\ActivityModel;
+use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\DB;
+
+class ActivityController extends Controller
+{
+    /**
+     * Display a listing of the resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function index()
+    {
+        $total = DB::table('activity_lists')->count();//总条数
+        $page = DB::table('activity_lists')->paginate(50);//每页显示条数
+        $ActivityTypes=DB::table('activity_types')->get();//活动类型
+        return view('Admin/GameManage/Activity',['types'=>$ActivityTypes,'page'=>$page,'total'=>$total]);
+    }
+
+    /**
+     * Show the form for creating a new resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function create()
+    {
+        $ActivityTypes=DB::table('activity_types')->get();
+        return view('Admin/GameManage/ActivityCreate',['types'=>$ActivityTypes]);
+    }
+
+    /**
+     * Store a newly created resource in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function store(Request $request)
+    {
+        $data=$this->data();
+        $value=ActivityModel::addActivity($data);
+//        返回数据
+        if($value['error']){
+            $request->session()->flash('msg',$value['msg']);
+            $request->session()->flash('error',true);
+            return redirect()->route('Activity.index');
+        }else{
+            $request->session()->flash('msg',$value['msg']);
+            $request->session()->flash('error',false);
+            return redirect()->route('Activity.index');
+        }
+    }
+
+    /**
+     * Display the specified resource.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function show($id)
+    {
+        //
+    }
+
+    /**
+     * Show the form for editing the specified resource.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function edit($id)
+    {
+        $ActivityTypes=DB::table('activity_types')->get();
+        $value=DB::table('activity_lists')->where('act_id',$id)->first();
+        return view('Admin/GameManage/ActivityEdit',['value'=>$value,'types'=>$ActivityTypes]);
+    }
+
+    /**
+     * Update the specified resource in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function update(Request $request, $id)
+    {
+        $data=$this->data();
+        $result=ActivityModel::updateActivity($data);
+        if($result['error']){
+            $request->session()->flash('msg',$result['msg']);
+            $request->session()->flash('error',true);
+            return redirect()->route('Activity.index');
+        }else{
+            $request->session()->flash('msg',$result['msg']);
+            $request->session()->flash('error',false);
+            return redirect()->route('Activity.index');
+        }
+    }
+
+    /**
+     * Remove the specified resource from storage.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function destroy($id)
+    {
+        $data = $this->data();
+        if($id != "all"){
+            $value=ActivityModel::where('act_id',$id)->delete();
+        }else{
+            $value = ActivityModel::whereIn('act_id',$data['id'])->delete();
+        }
+        if($value){
+            return ['msg'=>'删除成功','error'=>true];
+        }else{
+            return ['msg'=>'删除失败','error'=>false];
+        }
+    }
+
+//    条件搜索
+    public function search(Request $request){
+        $act_id=$request->input('act_id');//活动类型
+        $act_name=$request->input('act_name');//活动名称
+        $ActivityTypes=DB::table('activity_types')->get();//活动类型
+
+//        $type_name=DB::table('activity_types')->where('type_id',$act_id)->first();
+        if(empty($act_id)){
+            if(empty($act_name)){
+                $page = DB::table('activity_lists')->paginate(50);//每页显示条数
+            }else{
+                $page=DB::table('activity_lists')->where('act_name', 'like', $act_name.'%')->paginate(50);
+            }
+        }else{
+            if(empty($act_name)){
+                $page=DB::table('activity_lists')->where('act_type', $act_id)->paginate(50);
+            }else{
+                $page=DB::table('activity_lists')->where('act_name', 'like', $act_name.'%')->orWhere('act_type', $act_id)->paginate(50);
+            }
+        }
+        $total=$page->count();
+        return view('Admin/GameManage/Activity',['types'=>$ActivityTypes,'page'=>$page,'total'=>$total]);
+    }
+
+
+    public function isOn(Request $request){
+        $data=$this->data();
+        $con['status']=$data['num'];
+//        dump($con);
+        $result=DB::table('activity_lists')->where("act_id",$data['act_id'])->update($con);
+        if($result){
+            echo 1;
+        }else{
+            echo 0;
+        }
+    }
+}

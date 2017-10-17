@@ -1,0 +1,71 @@
+<?php $__env->startSection('css'); ?>
+<?php $__env->stopSection(); ?>  
+<?php $__env->startSection('nav'); ?>
+<?php $__env->stopSection(); ?>  
+<?php $__env->startSection('header'); ?>
+<?php $__env->stopSection(); ?>  
+<?php $__env->startSection('main'); ?>
+    <main class="main-cont content mCustomScrollbar">
+        <div class="breadcrumb">
+            <ul>
+                <li><a href="<?php echo e(route("index.index")); ?>">首页</a><i class="icon-angle-right"></i></li>
+                <li><a href="<?php echo e(route("Administrators.index")); ?>">用户管理</a><i class="icon-angle-right"></i></li>
+                <li><a href="#">添加管理员</a><i class="icon-angle-right"></i></li>
+            </ul>
+        </div>
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        <div class="page-wrap">
+            <!--开始::内容-->
+            <section class="page-hd">
+                <header>
+                    <h2 class="title">添加管理员</h2>
+                    <p class="title-description">
+                        两列式表单结构，一般针对产品详情，文章详情应用。
+                    </p>
+                </header>
+                <hr>
+            </section>
+            <form action="<?php echo e(route('AdminRole.store')); ?>" method="post">
+                <?php if(!empty($content)): ?>
+                    <div class="form-group-col-2">
+                        <div class="form-label">父级管理员：</div>
+                        <div class="form-cont">
+                            <input type="text" name="fname" readonly value="<?php echo e($content->rolename); ?>" placeholder="管理员名称..." class="form-control form-boxed" style="width:300px;">
+                            <input type="hidden" name="fid" value="<?php echo e($content->role_id); ?>">
+                        </div>
+                    </div>
+                <?php endif; ?>
+                <div class="form-group-col-2">
+                    <div class="form-label">角色名：</div>
+                    <div class="form-cont">
+                        <input type="text" name="rolename" placeholder="管理员名称..." class="form-control form-boxed" style="width:300px;">
+                    </div>
+                </div>
+                <div class="form-group-col-2">
+                    <div class="form-label"></div>
+                    <div class="form-cont">
+                        <?php echo e(csrf_field()); ?>
+
+                        <input type="submit" class="btn btn-primary" value="提交表单" />
+                        <input type="reset" class="btn btn-disabled" value="禁止" />
+                    </div>
+                </div>
+            </form>
+            <!--开始::结束-->
+        </div>
+    </main>
+<?php $__env->stopSection(); ?>  
+<?php $__env->startSection('footer'); ?>
+<?php $__env->stopSection(); ?>  
+<?php $__env->startSection('js'); ?>
+<?php $__env->stopSection(); ?>  
+<?php echo $__env->make('Admin.layouts.layout_admin', array_except(get_defined_vars(), array('__data', '__path')))->render(); ?>

@@ -1,0 +1,130 @@
+<?php
+
+namespace App\Http\Controllers\Admin;
+
+use App\Model\ActivityModel;
+use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\DB;
+
+class ActivityController extends Controller
+{
+    /**
+     * Display a listing of the resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function index()
+    {
+        $ActivityTypes=DB::table('activity_types')->get();
+        $ActivityLists=DB::table('activity_lists')->get();
+        return view('Admin/GameManage/Activity',['types'=>$ActivityTypes,'list'=>$ActivityLists]);
+    }
+
+    /**
+     * Show the form for creating a new resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function create()
+    {
+        $ActivityTypes=DB::table('activity_types')->get();
+        return view('Admin/GameManage/ActivityCreate',['types'=>$ActivityTypes]);
+    }
+
+    /**
+     * Store a newly created resource in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function store(Request $request)
+    {
+        $data=$this->data();
+        $value=ActivityModel::addActivity($data);
+//        返回数据
+        if($value['error']){
+            $request->session()->flash('msg',$value['msg']);
+            return redirect()->route('Activity.index');
+        }else{
+            $request->session()->flash('msg',$value['msg']);
+            return redirect()->route('Activity.index');
+        }
+    }
+
+    /**
+     * Display the specified resource.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function show($id)
+    {
+        //
+    }
+
+    /**
+     * Show the form for editing the specified resource.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function edit($id)
+    {
+        $ActivityTypes=DB::table('activity_types')->get();
+        $value=DB::table('activity_lists')->where('act_id',$id)->first();
+        return view('Admin/GameManage/ActivityEdit',['value'=>$value,'types'=>$ActivityTypes]);
+    }
+
+    /**
+     * Update the specified resource in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function update(Request $request, $id)
+    {
+//        $data['act_type']=$request->input('act_type');
+//        $data['act_name']=$request->input('act_name');
+//        $data['status']=$request->input('status');
+//        $data['start_time']=$request->input('start_time');
+//        $data['end_time']=$request->input('end_time');
+//        $data['act_num']=$request->input('act_num');
+//        $data['act_prize']=$request->input('act_prize');
+//        $result=DB::table('activity_lists')->where('act_id',$id)->update($data);
+//        if($result){
+//            $request->session()->flash('msg','编辑成功');
+//            return redirect()->route('Activity.index');
+//        }else{
+//            $request->session()->flash('msg','编辑失败');
+//            return redirect()->route('Activity.index');
+//        }
+        $data=$this->data();
+        $result=ActivityModel::updateActivity($data);
+
+        if($result['error']){
+            $request->session()->flash('msg',$result['msg']);
+            return redirect()->route('Activity.index');
+        }else{
+            $request->session()->flash('msg',$result['msg']);
+            return redirect()->route('Activity.index');
+        }
+    }
+
+    /**
+     * Remove the specified resource from storage.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function destroy($id)
+    {
+        $value=ActivityModel::where('act_id',$id)->delete();
+        if($value){
+            return ['msg'=>'删除成功','error'=>true];
+        }else{
+            return ['msg'=>'删除失败','error'=>false];
+        }
+    }
+}

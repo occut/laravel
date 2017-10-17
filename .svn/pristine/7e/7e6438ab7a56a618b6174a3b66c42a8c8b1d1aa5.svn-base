@@ -1,0 +1,31 @@
+<?php
+
+namespace App\Model;
+
+use App\Http\Controllers\Admin\ActivityController;
+use Illuminate\Database\Eloquent\Model;
+
+class ActivityModel extends Model
+{
+//    添加活动
+    static public function addActivity($data){
+        //实例化模型
+        $ActivityModel=new activity_types();
+        //查询数据
+        $ActivityModel->type_name=$data['activity_type'];
+        $ActivityModel->type_name=$data['activity_name'];
+        $ActivityModel->type_name=$data['status'];
+        $ActivityModel->type_name=$data['start_time'];
+        $ActivityModel->type_name=$data['end_time'];
+        $ActivityModel->type_name=$data['joinNum'];
+        $ActivityModel->type_name=$data['activity_prize'];
+        $value = $ActivityModel->save();
+        if($value){
+//            LogAction::logAction("添加活动[".$data['username']."]成功");
+            return ['msg'=>"添加活动成功",'error'=>true];
+        }else{
+//            LogAction::logAction("添加活动[".$data['username']."]失败");
+            return ['msg'=>"添加活动失败",'error'=>false];
+        }
+    }
+}

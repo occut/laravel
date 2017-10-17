@@ -1,0 +1,144 @@
+<?php $__env->startSection('css'); ?>
+<?php $__env->stopSection(); ?>  
+<?php $__env->startSection('nav'); ?>
+<?php $__env->stopSection(); ?>  
+<?php $__env->startSection('header'); ?>
+<?php $__env->stopSection(); ?>
+<?php $__env->startSection('main'); ?>
+    <main class="main-cont content mCustomScrollbar">
+        <div class="page-wrap">
+            <!--开始::内容-->
+            <div class="layui-tab layui-tab-card">
+                <ul class="layui-tab-title">
+                    <li class="layui-this">所有账户</li>
+                </ul>
+            <div class="layui-tab-content">
+                
+                <div class="layui-tab-item layui-show">
+                    <form action="<?php echo e(route('Account.index')); ?>">
+                        <div class="layui-form-item">
+                            <div class="layui-inline">
+                                <div class="layui-input-inline" style="width: 200px;">
+                                    <input type="text" name="account_number" value="<?php echo e(App\Functions\LogAction::input('account_number')); ?>" placeholder="请输入账号..." class="form-control form-boxed">
+                                </div>
+                            </div>
+                            <div class="layui-inline">
+                                <div class="layui-input-inline" style="width: 200px;">
+                                    <input type="text" name="account_grade" value="<?php echo e(App\Functions\LogAction::input('account_grade')); ?>" placeholder="等级..." class="form-control form-boxed">
+                                </div>
+                            </div>
+                            <div class="layui-inline">
+                                <div class="layui-input-inline" style="width: 200px;">
+                                    <input type="text" name="account_time" value="<?php echo e(App\Functions\LogAction::input('account_time')); ?>" id="registerTime" placeholder="注册时间" class="form-control form-boxed">
+                                </div>
+                            </div>
+                            <div class="layui-inline">
+                                <div class="form-cont">
+                                    <div class="layui-input-inline">
+                                        <input type="submit" class="layui-btn" value="搜索" />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                    <div class="layui-inline">
+                        <button class="layui-btn layui-btn-small" onclick="delAll('<?php echo e(route("Account.delete",['id'=>'all'])); ?>','<?php echo e(csrf_token()); ?>')">删除</button>
+                    </div>
+                    <?php if(Session::has('msg')): ?>
+                        <div class="alert alert-success">
+                            <?php echo e(Session::get('msg')); ?>
+
+                        </div>
+                    <?php endif; ?>
+                    <table class="layui-table">
+                        <thead>
+                        <tr>
+                            <th  style="text-align: center">
+                                <input type="checkbox" id="dcheckboxAll">
+                            </th>
+                            <th>ID</th>
+                            <th>角色名</th>
+                            <th>账号</th>
+                            <th>充值明细</th>
+                            <th>等级</th>
+                            <th>首次登陆设备码</th>
+                            <th>首次登录IP</th>
+                            <th>最后登录IP</th>
+                            <th>最后登录设备码</th>
+                            <th>注册时间</th>
+                            <th>渠道归属</th>
+                            <th>在线时长</th>
+                            <th>最后退出游戏时间</th>
+                            <th>安卓和IOS归属判定</th>
+                            <th>所在服务器</th>
+                            <th>游戏曾用名</th>
+                            <th>操作</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <?php if(!empty($content)): ?>
+                            <?php $__currentLoopData = $content; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $k=>$v): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                <tr class="cen">
+                                    <td>
+                                        <input type="checkbox" id="<?php echo e($v->account_id); ?>" value="<?php echo e($v->account_id); ?>" name="dcheckbox">
+                                    </td>
+                                    <td><?php echo e($v->account_id); ?></td>
+                                    <td><?php echo e($v->account_name); ?></td>
+                                    <td><?php echo e($v->account_number); ?></td>
+                                    <td><?php echo e($v->account_recharge); ?></td>
+                                    <td><?php echo e($v->account_grade); ?></td>
+                                    <td><?php echo e($v->account_startcode); ?></td>
+                                    <td><?php echo e($v->account_startip); ?></td>
+                                    <td><?php echo e($v->account_endip); ?></td>
+                                    <td><?php echo e($v->account_endcode); ?></td>
+                                    <td><?php echo e($v->account_time); ?></td>
+                                    <td><?php echo e($v->account_channel); ?></td>
+                                    <td><?php echo e($v->account_online); ?></td>
+                                    <td><?php echo e($v->account_out); ?></td>
+                                    <td><?php echo e($v->account_equipment); ?></td>
+                                    <td><?php echo e($v->account_server); ?></td>
+                                    <td><?php echo e($v->account_nameusedbefore); ?></td>
+                                    <td>
+                                        <a href="<?php echo e(route("Account.edit",['id'=>$v['account_id']])); ?>">编辑</a>
+                                        <a href="<?php echo e(route("Account.delete",['id'=>$v['account_id']])); ?>" onclick="deletes(this,'<?php echo e(csrf_token()); ?>');return false;">删除</a>
+                                    </td>
+                                </tr>
+                            <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                        <?php endif; ?>
+                        </tbody>
+                    </table>
+                    
+                    <?php if(!empty($content)): ?>
+                        <?php echo e($content->links("pagination.default")); ?>
+
+                    <?php endif; ?>
+                    
+                </div>
+                
+            </div>
+            </div>
+        </div>
+            <!--开始::结束-->
+        </div>
+
+    </main>
+<?php $__env->stopSection(); ?>  
+<?php $__env->startSection('footer'); ?>
+<?php $__env->stopSection(); ?>  
+<?php $__env->startSection('js'); ?>
+    <script>
+        //        时间选择Start
+        layui.use('laydate', function(){
+            var laydate = layui.laydate;
+
+            //执行一个laydate实例
+            laydate.render({
+                elem: '#registerTime' //指定元素
+            });
+        });
+        //        时间选择Over
+
+
+    </script>
+<?php $__env->stopSection(); ?>  
+<?php echo $__env->make('Admin.layouts.layout_admin', array_except(get_defined_vars(), array('__data', '__path')))->render(); ?>

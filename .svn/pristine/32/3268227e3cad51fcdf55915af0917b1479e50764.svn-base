@@ -1,0 +1,87 @@
+<?php
+
+namespace App\Model;
+
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\DB;
+
+class GameModel extends Model
+{
+    protected $table = 'game_lists';
+//    添加活动
+    static public function addGame($data){
+        //实例化模型
+        $GameModel=new GameModel();
+        //查询数据
+        $GameModel->game_name=$data['game_name'];
+        $GameModel->game_type=$data['game_type'];
+        $GameModel->status=$data['status'];
+//        $GameModel->iosOrnot=$data['iosOrnot'];
+//        $GameModel->charge_status=$data['charge_status'];
+        $GameModel->recommandOrnot=$data['recommandOrnot'];
+
+        $GameModel->language=$data['language'];
+        $GameModel->promoted_type=$data['promoted_type'];
+//        $GameModel->web=$data['web'];
+//        $GameModel->bbs=$data['bbs'];
+        $GameModel->strategy=$data['strategy'];
+//        $GameModel->coin_type=$data['coin_type'];
+//        $GameModel->coin_percent=$data['coin_percent'];
+
+//        $GameModel->game_simplify=$data['game_simplify'];
+//        $GameModel->CPA_price=$data['CPA_price'];
+//        $GameModel->game_initial=$data['game_initial'];
+//        $GameModel->qqGroup=$data['qqGroup'];
+        $GameModel->downloaded_num=$data['downloaded_num'];
+//        $GameModel->iosPackageName=$data['iosPackageName'];
+//        $GameModel->andPackageName=$data['andPackageName'];
+//
+//        $GameModel->discount=$data['discount'];
+        $GameModel->and_addr=$data['and_addr'];
+        $GameModel->and_version=$data['and_version'];
+        $GameModel->ios_addr=$data['ios_addr'];
+        $GameModel->ios_version=$data['ios_version'];
+        $GameModel->game_size=$data['game_size'];
+//        $GameModel->ceshi_status=$data['ceshi_status'];
+
+        $GameModel->charge_mode=$data['charge_mode'];
+//        $GameModel->operator=$data['operator'];
+//        $GameModel->package_type=$data['package_type'];
+        $GameModel->game_intro=$data['game_intro'];
+//        $GameModel->iosQrcode=$data['iosQrcode'];
+//        $GameModel->andQrcode=$data['andQrcode'];
+//        $GameModel->img_path=$data['img_path'];
+
+//        $GameModel->fencheng_percentage=$data['fencheng_percentage'];
+//        $GameModel->keyword=$data['keyword'];
+        $GameModel->level=$data['level'];
+        $value = $GameModel->save();
+        if($value){
+//            LogAction::logAction("添加活动[".$data['username']."]成功");
+            return ['msg'=>"添加成功",'error'=>true];
+        }else{
+//            LogAction::logAction("添加活动[".$data['username']."]失败");
+            return ['msg'=>"添加失败",'error'=>false];
+        }
+    }
+
+    static public function updateGame($data)
+    {
+        $id = $data['game_id'];
+        foreach ($data as $k => $v) {
+            if (!$v) {
+                unset($data['game_id']);
+            }
+            $result =DB::table('game_lists')
+                ->where('game_id', $id)
+                ->update($data);
+            if ($result) {
+//            LogAction::logAction("修改成功");
+                return ['msg' => "修改成功", 'error' => true];
+            } else {
+//            LogAction::logAction("修改失败");
+                return ['msg' => "修改失败", 'error' => false];
+            }
+        }
+    }
+}

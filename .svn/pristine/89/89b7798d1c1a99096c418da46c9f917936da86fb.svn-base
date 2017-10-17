@@ -1,0 +1,161 @@
+<?php
+
+namespace App\Http\Controllers\Admin;
+
+use App\Model\GameModel;
+use App\Functions\LogAction;
+use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\DB;
+
+class GameController extends Controller
+{
+    /**
+     * Display a listing of the resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function index()
+    {
+        $total = DB::table('game_lists')->count();//总条数
+        $page = DB::table('game_lists')->orderby("game_order","asc")->paginate(50);//每页显示条数
+        return view('Admin/GameManage/Game',['total'=>$total,'page'=>$page]);
+    }
+
+    /**
+     * Show the form for creating a new resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function create()
+    {
+        return view('Admin/GameManage/GameCreate');
+    }
+
+    /**
+     * Store a newly created resource in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function store(Request $request)
+    {
+        $data=$this->data();
+//        dump($data);die;
+        $value=GameModel::addGame($data);
+//        返回数据
+        if($value['error']){
+            $request->session()->flash('msg',$value['msg']);
+            $request->session()->flash('error',true);
+            return redirect()->route('Game.index');
+        }else{
+            $request->session()->flash('msg',$value['msg']);
+            $request->session()->flash('error',false);
+            return redirect()->route('Game.index');
+        }
+    }
+
+    /**
+     * Display the specified resource.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function show($id)
+    {
+        //
+    }
+
+    /**
+     * Show the form for editing the specified resource.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function edit($id)
+    {
+        $results=DB::table('game_lists')->where('game_id',$id)->first();
+//        dump($results);die;
+        return view('Admin/GameManage/GameEdit',['result'=>$results]);
+    }
+
+    /**
+     * Update the specified resource in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function update(Request $request, $id)
+    {
+        $data=$this->data();
+        $result=GameModel::updateGame($data);
+
+        if($result['error']){
+            $request->session()->flash('msg',$result['msg']);
+            $request->session()->flash('error',true);
+            return redirect()->route('Game.index');
+        }else{
+            $request->session()->flash('msg',$result['msg']);
+            $request->session()->flash('error',false);
+            return redirect()->route('Game.index');
+        }
+    }
+
+    /**
+     * Remove the specified resource from storage.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function destroy($id)
+    {
+        $data = $this->data();
+        if($id != "all"){
+            $value=GameModel::where('game_id',$id)->delete();
+        }else{
+            $value = GameModel::whereIn('game_id',$data['id'])->delete();
+        }
+        if($value){
+            return ['msg'=>'删除成功','error'=>true];
+        }else{
+            return ['msg'=>'删除失败','error'=>false];
+        }
+    }
+
+    //    条件搜索
+    public function search(Request $request){
+//        $data = app('request')->all();
+        $game_type=$request->input('game_type');//活动类型
+//        dump($game_type);die;
+        $game_name=$request->input('game_name');//活动名称
+
+        if($game_type == ''){
+            if(empty($game_name)){
+                $page = DB::table('game_lists')->paginate(50);//每页显示条数
+            }else{
+                $page=DB::table('game_lists')->where('game_name', 'like',"%$game_name%")->paginate(50);
+            }
+        }else{
+            if(empty($game_name)){
+                $page=DB::table('game_lists')->where('game_type', $game_type)->paginate(50);
+            }else{
+                $page=DB::table('game_lists')->where('game_name', 'like',$game_name.'%')->orWhere('game_type', $game_type)->paginate(50);
+            }
+        }
+        $total=$page->count();
+        return view('Admin/GameManage/Game',['page'=>$page,'total'=>$total]);
+    }
+
+    public function isOn(Request $request){
+        $data=$this->data();
+        $con['status']=$data['num'];
+//        dump($con);
+        $result=DB::table('game_lists')->where("game_id",$data['game_id'])->update($con);
+        if($result){
+            echo 1;
+        }else{
+            echo 0;
+        }
+    }
+}

@@ -1,0 +1,212 @@
+<?php $__env->startSection('css'); ?>
+<?php $__env->stopSection(); ?>  
+<?php $__env->startSection('nav'); ?>
+<?php $__env->stopSection(); ?>  
+<?php $__env->startSection('header'); ?>
+<?php $__env->stopSection(); ?>
+<?php $__env->startSection('main'); ?>
+    <main class="main-cont content mCustomScrollbar">
+        <div class="page-wrap">
+            <!--开始::内容-->
+            <div class="layui-tab layui-tab-card">
+                <ul class="layui-tab-title">
+                    <li><a href="<?php echo e(route('Register.index')); ?>" class="layui-this">实时注册</a></li>
+                </ul>
+                <div class="layui-tab-content">
+                    
+                    <div class="layui-tab-item layui-show">
+                        <form action="<?php echo e(route('Register.index')); ?>"  class="layui-form">
+                            <div class="layui-form-item">
+                                <div class="layui-inline">
+                                    <div class="layui-input-inline" style="width: 200px;">
+                                        <input type="text" name="ac_name" value="<?php echo e(App\Functions\LogAction::input('ac_name')); ?>" placeholder="请输入用户名..." class="form-control form-boxed">
+                                    </div>
+                                </div>
+                                <div class="layui-inline">
+                                    <div class="layui-input-inline" style="width: 200px;">
+                                        <input type="text" name="ac_ip" value="<?php echo e(App\Functions\LogAction::input('ac_ip')); ?>" placeholder="请输入注册IP..." class="form-control form-boxed">
+                                    </div>
+                                </div>
+                                <div class="layui-inline">
+                                    <div class="layui-input-inline" style="width: 200px;">
+                                        <select name="ac_type" lay-verify="">
+                                            <option value="">请选择设备类型</option>
+                                            <option value="0" <?php echo e('0' == App\Functions\LogAction::input('ac_type') ? 'selected' : ''); ?>>PC</option>
+                                            <option value="1" <?php echo e('1' == App\Functions\LogAction::input('ac_type') ? 'selected' : ''); ?>>安卓</option>
+                                            <option value="2" <?php echo e('2' == App\Functions\LogAction::input('ac_type') ? 'selected' : ''); ?>>苹果</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="layui-inline">
+                                    <div class="layui-input-inline" style="width: 200px;">
+                                        <select name="ac_adminuser" lay-verify="">
+                                            <option value="">请选择所属专员</option>
+                                            <?php if(isset($User)): ?>
+                                                <?php
+                                                $tmp = '';
+                                                \App\ClassLib\Category::treeMap($User,function($v) use(&$tmp) {
+                                                    $tmp .= '<option value="'.$v['user_id'].'">'.$v['username'].'</option>';
+                                                });
+                                                echo $tmp;
+                                                ?>
+                                            <?php endif; ?>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="layui-inline">
+                                    <div class="layui-input-inline" style="width: 200px;">
+                                        <select name="ac_promoters" lay-verify="">
+                                            <option value="">请选择所属渠道</option>
+                                           <?php $__currentLoopData = $promoters; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $k=>$v): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                                <option value="<?php echo e($v->pr_id); ?>" <?php echo e($v->pr_id == App\Functions\LogAction::input('ac_promoters') ? 'selected' : ''); ?>><?php echo e($v->pr_name); ?></option>
+                                               <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                                        </select>
+                                    </div>
+                                </div>
+                                
+                                    
+                                        
+                                            
+                                            
+                                            
+                                        
+                                    
+                                
+                                <div class="layui-inline">
+                                    <div class="layui-input-inline" style="width: 200px;">
+                                        <input type="text" id="startTime" name="startTime" value="<?php echo e(App\Functions\LogAction::input("startTime")); ?>" class="layui-input" id="test6" placeholder="开始时间" class="form-control form-boxed">
+                                    </div>
+                                    <div class="layui-form-mid">-</div>
+                                    <div class="layui-input-inline" style="width: 200px;">
+                                        <input type="text" id="endTime" name="endTime" value="<?php echo e(App\Functions\LogAction::input("endTime")); ?>" placeholder="结束时间" class="form-control form-boxed">
+                                    </div>
+                                </div>
+                                <div class="layui-inline">
+                                    <div class="form-cont">
+                                        <div class="layui-input-inline">
+                                            <input type="submit" class="layui-btn" value="搜索" />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                        <div class="layui-inline">
+                            <button class="layui-btn layui-btn-small" onclick="delAll('<?php echo e(route("Register.delete",['id'=>'all'])); ?>','<?php echo e(csrf_token()); ?>')">删除</button>
+                        </div>
+                        <section class="sec" style="display: none">
+                            <?php if(Session::has('msg')): ?>
+                                <div class="al" style="width: auto;padding: 10px;cursor: pointer"><?php echo e(Session::get('msg')); ?></div>
+                                <p><?php echo e(Session::get('error')); ?></p>
+                            <?php endif; ?>
+                        </section>
+                        <table class="layui-table">
+                            <thead>
+                            <tr>
+                                <th  style="text-align: center">
+                                    <input type="checkbox" id="dcheckboxAll">
+                                </th>
+                                <th>ID</th>
+                                <th>用户名</th>
+                                <th>注册游戏</th>
+                                <th>注册时间</th>
+                                <th>注册IP</th>
+                                <th>游戏角色</th>
+                                <th>分区</th>
+                                <th>设备编号</th>
+                                <th>设备类型</th>
+                                <th>等  级</th>
+                                <th>推广人员</th>
+                                <th>所属专员</th>
+                                <th>操作</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <?php if(!empty($content)): ?>
+                                <?php $__currentLoopData = $content; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $k=>$v): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                    <tr class="cen">
+                                        <td>
+                                            <input type="checkbox" id="<?php echo e($v->ac_id); ?>" value="<?php echo e($v->ac_id); ?>" name="dcheckbox">
+                                        </td>
+                                        <td><?php echo e($v->ac_id); ?></td>
+                                        <td><a href="#"><?php echo e($v->ac_name); ?></a></td>
+                                        <td><?php echo e($v->ac_game); ?></td>
+                                        <td><?php echo e($v->ac_time); ?></td>
+                                        <td><?php echo e($v->ac_ip); ?></td>
+                                        <td><?php echo e($v->ac_role); ?></td>
+                                        <td><?php echo e($v->ac_partition); ?></td>
+                                        <td><?php echo e($v->ac_number); ?></td>
+                                        <td><?php echo e(\App\Model\Promoter::types($v->ac_type)); ?></td>
+                                        <td><?php echo e($v->ac_grade); ?></td>
+                                        <td><?php echo e(\App\Model\Promoter::account($v->ac_promoters)['pr_name']); ?></td>
+                                        <td><?php echo e(\App\Model\AdminUser::Adminselect($v->ac_adminuser)['username']); ?></td>
+                                        <td>
+                                            <a href="<?php echo e(route("Register.edit",['id'=>$v->ac_id])); ?>">编辑</a>
+                                            <a title="删除" href="<?php echo e(route("Register.delete",['id'=>$v->ac_id])); ?>" onclick="deletes(this,'<?php echo e(csrf_token()); ?>');return false;">删除</a>
+                                        </td>
+                                    </tr>
+                                <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                            <?php endif; ?>
+                            
+                                
+                                    
+                                
+                                
+                                
+                                
+                                
+                                
+                                
+                                
+                                
+                                
+                                
+                                
+                                
+                                
+                                    
+                                    
+                                
+                            
+                            </tbody>
+                        </table>
+                        
+                        <?php if(!empty($content)): ?>
+                            <?php echo e($content->links("pagination.default")); ?>
+
+                        <?php endif; ?>
+                        <br>
+                        <br>
+                        
+                    </div>
+                    
+                </div>
+            </div>
+        </div>
+        <!--开始::结束-->
+        </div>
+
+    </main>
+
+<?php $__env->stopSection(); ?>  
+<?php $__env->startSection('footer'); ?>
+<?php $__env->stopSection(); ?>  
+<?php $__env->startSection('js'); ?>
+    <script>
+        //        时间选择Start
+        layui.use('laydate', function(){
+            var laydate = layui.laydate;
+            //执行一个laydate实例
+            laydate.render({
+                elem: '#startTime' //指定元素
+            });
+            laydate.render({
+                elem: '#endTime' //指定元素
+            });
+            laydate.render({
+                elem: '#test6'
+                ,range: true
+            });
+        });
+    </script>
+<?php $__env->stopSection(); ?>  
+<?php echo $__env->make('Admin.layouts.layout_admin', array_except(get_defined_vars(), array('__data', '__path')))->render(); ?>
